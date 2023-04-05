@@ -6,9 +6,9 @@
 - [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
 
 ### Command examples
-- `template 500-505 -r`
-- `clone 500-505 -c doge -i 600 -u -n "Your Mom" -e memes4dayz@totallyvaliddomain.com -p Password123 -b -bs 10.0.21.0/24 -bv 400,402 -f -fi 10.0.21.254 -db 10.0.21.10 -de 10.0.21.245 -dd 1.1.1.1 8.8.8.8 -ds 500,10.0.21.3 -s`
-- `purge doge -u -b -bv 400,402 -f`
+`template 500-505 -r`
+`clone 500-505 -c doge -i 600 -u -n "Your Mom" -e memes4dayz@totallyvaliddomain.com -p Password123 -b -bs 10.0.21.0/24 -bv 400,402 -f -fi 10.0.21.254 -db 10.0.21.10 -de 10.0.21.245 -dd 1.1.1.1 8.8.8.8 -ds 500,10.0.21.3 -s`
+`purge doge -u -b -bv 400,402 -f`
 
 ### Usage information
 #### [Template](template.py)
