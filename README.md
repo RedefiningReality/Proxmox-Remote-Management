@@ -1,6 +1,7 @@
 # Automated-Environment-Scripts
 
 - [clone.py](clone.py) => clone Proxmox virtual machine templates
+```
 usage: clone Proxmox virtual machine templates [-h] [-c CLONE_NAME] [-i CLONE_BEGIN_ID]
                                                [-t {linked,full}] [-s] [-u [USER]] [-n NAME]
                                                [-e EMAIL] [-p PASSWORD] [-g GROUPS [GROUPS ...]]
@@ -95,3 +96,4 @@ options:
   -fc FIREWALL_CONFIG, --firewall-config FIREWALL_CONFIG
                         path to configuration file in pfSense - this should be /cf/conf/config.xml
                         (default) unless using a customised pfSense instance
+```
