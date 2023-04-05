@@ -1,6 +1,14 @@
-# Automated-Environment-Scripts
+# Automated Environment Scripts
 
-- [template.py](template.py) ⇒ convert Proxmox virtual machines into clonable templates
+### Commands
+- [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
+- [clone](clone.py) ⇒ clone Proxmox virtual machine templates
+- [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
+
+### Command examples
+
+### Usage information
+##### [Template](template.py)
 ```
 usage: convert Proxmox virtual machines into clonable templates [-h] [-r] [-v] [-pH PROXMOX_HOST]
                                                                 [-pu PROXMOX_USER]
@@ -29,7 +37,7 @@ options:
   -pn PROXMOX_NODE, --proxmox-node PROXMOX_NODE
                         node containing virtual machines to template
 ```
-- [clone.py](clone.py) ⇒ clone Proxmox virtual machine templates
+##### [Clone](clone.py)
 ```
 usage: clone Proxmox virtual machine templates [-h] [-c CLONE_NAME] [-i CLONE_BEGIN_ID]
                                                [-t {linked,full}] [-s] [-u [USER]] [-n NAME]
@@ -126,7 +134,7 @@ options:
                         path to configuration file in pfSense - this should be /cf/conf/config.xml
                         (default) unless using a customised pfSense instance
 ```
-- purge ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
+##### [Purge](purge.py)
 ```
 usage: purge Proxmox virtual machines and corresponding Linux bridge [-h] [-u [USER]] [-b]
                                                                      [-bv BRIDGED_VMS] [-f] [-v]
