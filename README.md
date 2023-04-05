@@ -2,7 +2,7 @@
 
 ### Commands
 - [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
-- [clone](clone.py) ⇒ clone Proxmox virtual machine templates
+- [clone](clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
 - [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
 
 ### Command examples
