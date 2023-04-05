@@ -6,9 +6,12 @@
 - [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
 
 ### Command examples
+- template 500-505 -r
+- clone 500-505 -c doge -i 600 -u -n "Your Mom" -e memes4dayz@totallyvaliddomain.com -p Password123 -b -bs 10.0.21.0/24 -bv 400,402 -f -fi 10.0.21.254 -db 10.0.21.10 -de 10.0.21.245 -dd 1.1.1.1 8.8.8.8 -ds 500,10.0.21.3 -s
+- purge doge -u -b -bv 400,402 -f
 
 ### Usage information
-##### [Template](template.py)
+#### [Template](template.py)
 ```
 usage: convert Proxmox virtual machines into clonable templates [-h] [-r] [-v] [-pH PROXMOX_HOST]
                                                                 [-pu PROXMOX_USER]
@@ -37,7 +40,7 @@ options:
   -pn PROXMOX_NODE, --proxmox-node PROXMOX_NODE
                         node containing virtual machines to template
 ```
-##### [Clone](clone.py)
+#### [Clone](clone.py)
 ```
 usage: clone Proxmox virtual machine templates [-h] [-c CLONE_NAME] [-i CLONE_BEGIN_ID]
                                                [-t {linked,full}] [-s] [-u [USER]] [-n NAME]
@@ -134,7 +137,7 @@ options:
                         path to configuration file in pfSense - this should be /cf/conf/config.xml
                         (default) unless using a customised pfSense instance
 ```
-##### [Purge](purge.py)
+#### [Purge](purge.py)
 ```
 usage: purge Proxmox virtual machines and corresponding Linux bridge [-h] [-u [USER]] [-b]
                                                                      [-bv BRIDGED_VMS] [-f] [-v]
