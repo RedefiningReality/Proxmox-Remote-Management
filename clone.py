@@ -29,13 +29,13 @@ def static_ip(arg):
 	return [int(args[0]),args[1]]
 
 # Check for IDs in ids list that don't exist in Proxmox
-def valid_ids(ids):
+def valid_ids(ids, accept=[]):
 	if ids is None:
 		return []
 
 	valid = []
 	for vmid in ids:
-		if vmid in vmids:
+		if vmid in vmids or vmid in accept:
 			valid.append(vmid)
 		else:
 			print(f'\033[33mNo virtual machine or template found with ID {vmid}\033[0m')
@@ -66,8 +66,8 @@ parser.add_argument('-r', '--roles', type=str, default='PVEVMUser', help='roles 
 parser.add_argument('-b', '--create-bridge', action='store_true', help='create a new Linux bridge for these virtual machines')
 parser.add_argument('-bs', '--bridge-subnet', type=str, help='add new bridge with subnet specified in CIDR notation (ex: 10.0.2.0/24)')
 parser.add_argument('-bp', '--bridge-ports', type=str, help='attach ports/slaves to the new bridge (ex. eno1)')
-parser.add_argument('-bv', '--add-bridged-vms', type=num_list, help='add the new bridge to the virtual machines with the specified IDs (requires -b)')
-parser.add_argument('-cs', '--cloud-init-static', type=static_ip, nargs='+', help='IP address for bridged VM with specified ID or clone created from template with specified ID - VM MUST have cloud-init installed - format is <ID>,<IP> (ex. 500,10.0.2.2 402,10.0.2.3)')
+parser.add_argument('-bv', '--add-bridged-vms', type=num_list, help='add the new bridge to the virtual machines with the specified IDs or clones of templates with the specified IDs (requires -b)')
+parser.add_argument('-cs', '--cloud-init-static', type=static_ip, default=[], nargs='+', help='IP address for bridged VM with specified ID or clone created from template with specified ID - VM MUST have cloud-init installed - format is <ID>,<IP> (ex. 500,10.0.2.2 402,10.0.2.3)')
 
 parser.add_argument('-f', '--firewall', action='store_true', help='configure pfSense firewall to serve DHCP on newly-created bridge (requires -b)')
 parser.add_argument('-fi', '--firewall-ip', type=str, help='local IPv4 address of the pfSense firewall (subnet ending in .1 if not specified)')
@@ -80,14 +80,14 @@ parser.add_argument('-v', '--verbose', action='count', default=0, help='increase
 parser.add_argument('-pH', '--proxmox-host', type=str, default='216.47.144.122:443', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='561b209a-33f0-4b69-843b-c5a9cf95cf67', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
 parser.add_argument('-pn', '--proxmox-node', type=str, default='ece2223', help='node containing virtual machines to template')
 
 parser.add_argument('-fH', '--firewall-host', type=str, default='216.47.158.239', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
 parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
 parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
-parser.add_argument('-fp', '--firewall-password', type=str, default='[REDACTED]', help='password for the pfSense firewall (requires -f)')
+parser.add_argument('-fp', '--firewall-password', type=str, default='S@lcianaszkot23', help='password for the pfSense firewall (requires -f)')
 parser.add_argument('-ft', '--firewall-timeout', type=float, default=5, help='time in seconds before connection to pfSense times out (default is 5)')
 parser.add_argument('-fc', '--firewall-config', type=str, default='/cf/conf/config.xml', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
@@ -140,7 +140,7 @@ for vm in vms:
 vmids = list(vm_names.keys())
 
 ids = valid_ids(args.ids)
-bridged = valid_ids(args.add_bridged_vms)
+bridged = valid_ids(args.add_bridged_vms, accept=ids)
 
 # cloud-init will contain args.cloud_init_static as dictionary with only valid IDs
 for pair in args.cloud_init_static:
@@ -148,7 +148,7 @@ for pair in args.cloud_init_static:
 		cloudinit[pair[0]] = pair[1]
 
 # static will contain args.dhcp_static as dictionary with only valid IDs
-if args.firewall:
+if args.firewall and args.dhcp_static is not None:
 	for pair in args.dhcp_static:
 		if pair[0] in bridged or pair[0] in ids:
 			static[pair[0]] = pair[1]
@@ -206,6 +206,10 @@ for i, vmid in enumerate(ids):
 	print(f'Cloning virtual machine template with ID {vmid} to {newid}')
 	pm.nodes(args.proxmox_node).qemu(vmid).clone.post(newid=newid, name=name, full=full)
 
+	if vmid in bridged:
+		bridged.append(newid)
+		bridged.remove(vmid)
+
 	# Replace template ID with clone ID
 	# cloudinit will contain ID: IP address for all VMs
 	if vmid in cloudinit.keys():
@@ -228,7 +232,7 @@ for thread in threads:
 print('\033[32mAll virtual machine templates cloned successfully!\033[0m\n')
 
 if args.create_bridge:
-	bridged += clone_ids
+	#bridged += clone_ids
 	print(f'Adding new Linux bridge to the desired virtual machines')
 
 	for vmid in bridged:
