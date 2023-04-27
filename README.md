@@ -6,7 +6,7 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 2. Clone this repository: `git clone https://github.com/RedefiningReality/Automated-Environment-Scripts.git`
 3. Enter the cloned directory: `cd Automated-Environment-Scripts`
-4. Modify the `[REDACTED]` text in each script so that it works with your Proxmox instance (this should be self-explanatory)
+4. Modify the `[REDACTED]` text in each script and any other default values for arguments (look for the word `default`) so that it works with your Proxmox instance (this should be self-explanatory)
 5. Create links to base scripts so they can be run as commands:
 ```
 ln -s template.py /usr/bin/template
