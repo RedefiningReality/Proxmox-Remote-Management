@@ -7,13 +7,13 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 2. Clone this repository: `git clone https://github.com/RedefiningReality/Automated-Environment-Scripts.git`
 3. Enter the cloned directory: `cd Automated-Environment-Scripts`
 4. Modify the `[REDACTED]` text in each script so that it works with your Proxmox instance (this should be self-explanatory)
-5. Create links to scripts so they can be run as commands:
+5. Create links to base scripts so they can be run as commands:
 ```
 ln -s template.py /usr/bin/template
 ln -s clone.py /usr/bin/clone
 ln -s purge.py /usr/bin/purge
 ```
-6. Modify easyclone.sh and easypurge.sh to your liking and create links to those as well. See comments in each script.
+6. Modify [easyclone.sh](easyclone.sh) and [easypurge.sh](easypurge.sh) to your liking and create links to those as well. See comments in each script.
 ```
 ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
