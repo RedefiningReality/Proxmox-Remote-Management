@@ -77,17 +77,17 @@ parser.add_argument('-dd', '--dhcp-dns', type=str, nargs='+', help='DNS servers 
 parser.add_argument('-ds', '--dhcp-static', type=static_ip, nargs='+', help='DHCP static lease for bridged VM with specified ID or clone created from template with specified ID - format is <ID>,<IP> (ex. 500,10.0.2.2 402,10.0.2.3)')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='216.47.144.122:443', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='561b209a-33f0-4b69-843b-c5a9cf95cf67', help='value of Proxmox authentication token')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='ece2223', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
 
-parser.add_argument('-fH', '--firewall-host', type=str, default='216.47.158.239', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
+parser.add_argument('-fH', '--firewall-host', type=str, default='[REDACTED]', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
 parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
 parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
-parser.add_argument('-fp', '--firewall-password', type=str, default='S@lcianaszkot23', help='password for the pfSense firewall (requires -f)')
+parser.add_argument('-fp', '--firewall-password', type=str, default='[REDACTED]', help='password for the pfSense firewall (requires -f)')
 parser.add_argument('-ft', '--firewall-timeout', type=float, default=5, help='time in seconds before connection to pfSense times out (default is 5)')
 parser.add_argument('-fc', '--firewall-config', type=str, default='/cf/conf/config.xml', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
