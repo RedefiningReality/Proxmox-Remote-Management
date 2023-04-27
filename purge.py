@@ -51,14 +51,14 @@ parser.add_argument('-bv', '--bridged-vms', type=num_list, help='check virtual m
 parser.add_argument('-f', '--firewall', action='store_true', help='remove interface and DHCP from pfSense firewall configuration (requires -b)')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='216.47.144.122:443', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
 parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='ece2223', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
 
-parser.add_argument('-fH', '--firewall-host', type=str, default='216.47.158.239', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
+parser.add_argument('-fH', '--firewall-host', type=str, default='[REDACTED]', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
 parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
 parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
 parser.add_argument('-fp', '--firewall-password', type=str, default='[REDACTED]', help='password for the pfSense firewall (requires -f)')
