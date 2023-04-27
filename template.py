@@ -35,12 +35,12 @@ parser.add_argument('ids', type=num_list, help='IDs of virtual machines to templ
 parser.add_argument('-r', '--remove-network', action='store_true', help='remove all network devices from virtual machine templates')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='216.47.144.122:443', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='561b209a-33f0-4b69-843b-c5a9cf95cf67', help='value of Proxmox authentication token')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='ece2223', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
 
 args = parser.parse_args()
 
