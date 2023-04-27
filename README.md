@@ -20,7 +20,7 @@ ln -s template.py /usr/bin/template
 ln -s clone.py /usr/bin/clone
 ln -s purge.py /usr/bin/purge
 ```
-6. Modify easyclone.sh and easypurge.sh to your liking and create links to those as well.
+6. Modify easyclone.sh and easypurge.sh to your liking and create links to those as well. See comments in each script.
 ```
 ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
