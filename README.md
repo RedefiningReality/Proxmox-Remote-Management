@@ -1,13 +1,6 @@
 # Automated Environment Scripts
 Converts a set of Proxmox virtual machines to templates, which can then be dynamically provisioned for a set of users. The intended purpose of this project is for teaching cybersecurity hands-on, allowing an instructor to set up a cybersecurity practice environment that can be easily cloned to provide each student with access to their own copy.
 
-### Commands
-- [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
-- [clone](clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
-- [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
-- [easyclone](easyclone.sh) ⇒ template bash script that runs [clone](clone.py) with a set of predefined arguments
-- [easypurge](easypurge.sh) ⇒ template bash script that runs [purge](purge.py) with a set of predefined arguments
-
 ### Setup
 **Note:** Requires Python 3
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
@@ -25,6 +18,13 @@ ln -s purge.py /usr/bin/purge
 ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
 ```
+
+### Commands
+- [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
+- [clone](clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
+- [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
+- [easyclone](easyclone.sh) ⇒ template bash script that runs [clone](clone.py) with a set of predefined arguments
+- [easypurge](easypurge.sh) ⇒ template bash script that runs [purge](purge.py) with a set of predefined arguments
 
 ### Command examples
 `template 500-505 -r`
