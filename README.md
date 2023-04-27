@@ -1,4 +1,5 @@
 # Automated Environment Scripts
+Converts a set of Proxmox virtual machines to templates, which can then be dynamically provisioned for a set of users. The intended purpose of this project is for teaching cybersecurity hands-on, allowing an instructor to set up a cybersecurity practice environment that can be easily cloned to provide each student with access to their own copy.
 
 ### Commands
 - [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
