@@ -3,6 +3,7 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 
 ### Setup
 **Note:** Requires Python 3
+
 I will be updating this repo this summer to include a setup script that does all this for you...
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 2. Clone this repository: `git clone https://github.com/RedefiningReality/Automated-Environment-Scripts.git`
