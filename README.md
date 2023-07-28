@@ -4,29 +4,30 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 ### Setup
 **Note:** Requires Python 3
 
-I will be updating this repo this summer to include a setup script that does all this for you...
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
-2. Clone this repository: `git clone https://github.com/RedefiningReality/Automated-Environment-Scripts.git`
-3. Enter the cloned directory: `cd Automated-Environment-Scripts`
-4. Modify the `[REDACTED]` text in each script and any other default values for arguments (look for the word `default`) so that it works with your Proxmox instance (this should be self-explanatory)
-5. Create links to base scripts so they can be run as commands:
-```
-ln -s template.py /usr/bin/template
-ln -s clone.py /usr/bin/clone
-ln -s purge.py /usr/bin/purge
-```
-6. Modify [easyclone.sh](easyclone.sh) and [easypurge.sh](easypurge.sh) to your liking and create links to those as well. See comments in each script:
+2. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Management-Scripts.git`
+3. Enter the cloned directory: `cd Proxmox-Management-Scripts`
+4. Run the [setup script](scripts/setup.py): `./setup.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
+6. Modify [easyclone.sh](easyclone.sh) and [easypurge.sh](easypurge.sh) to your liking. See comments in each script.
+You can add these to your PATH so that they may be executed as commands with the following:
 ```
 ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
 ```
 
+Additional notes about the setup script:
+- You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
+- If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
+- If you'd like to perform a fully unattended installation (no prompts), use `-f [True/False]` to specify whether you're using a pfSense firewall or not and `-p [True/False]` to specify whether you'd like to add the finished scripts to your PATH (Linux only) -> be sure you specify all other options!
+
 ### Commands
-- [template](template.py) ⇒ convert Proxmox virtual machines into clonable templates
-- [clone](clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
-- [purge](purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
-- [easyclone](easyclone.sh) ⇒ template bash script that runs [clone](clone.py) with a set of predefined arguments
-- [easypurge](easypurge.sh) ⇒ template bash script that runs [purge](purge.py) with a set of predefined arguments
+- [template](scripts/template.py) ⇒ convert Proxmox virtual machines into clonable templates
+- [clone](scripts/clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
+- [purge](scripts/purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
+- [puser](scripts/puser.py) ⇒ create, destroy, and change passwords for Proxmox users
+  - for more information, consult the [puser guide](Proxmox User Guide.md)
+- [easyclone](scripts/easyclone.sh) ⇒ template bash script that runs [clone](scripts/clone.py) with a set of predefined arguments
+- [easypurge](scripts/easypurge.sh) ⇒ template bash script that runs [purge](scripts/purge.py) with a set of predefined arguments
 
 ### Command examples
 `template 500-505 -r`
@@ -36,7 +37,48 @@ ln -s easypurge.sh /usr/bin/easypurge
 `purge doge -u -b -bv 400,402 -f`
 
 ### Usage information
-#### [Template](template.py)
+#### [Setup](scripts/setup.py)
+```
+usage: setup Proxmox automated environment scripts [-h] [-b] [-p ADD_TO_PATH] [-pH PROXMOX_HOST] [-pu PROXMOX_USER]
+                                                   [-ptn PROXMOX_TOKEN_NAME] [-ptv PROXMOX_TOKEN_VALUE]
+                                                   [-pn PROXMOX_NODE] [-f CONFIGURE_FIREWALL] [-fH FIREWALL_HOST]
+                                                   [-fP FIREWALL_PORT] [-fu FIREWALL_USER] [-fp FIREWALL_PASSWORD]
+                                                   [-ft FIREWALL_TIMEOUT] [-fc FIREWALL_CONFIG]
+
+options:
+  -h, --help            show this help message and exit
+  -b, --bypass-checks   Bypass all checks to ensure correct values were entered (useful if you haven't finished
+                        setting up Proxmox)
+  -p ADD_TO_PATH, --add-to-path ADD_TO_PATH
+                        True/False - whether or not to add scripts to PATH (Linux only - useful for
+                        scripted/unattended installation)
+  -pH PROXMOX_HOST, --proxmox-host PROXMOX_HOST
+                        Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.122:443)
+  -pu PROXMOX_USER, --proxmox-user PROXMOX_USER
+                        Proxmox username for authentication
+  -ptn PROXMOX_TOKEN_NAME, --proxmox-token-name PROXMOX_TOKEN_NAME
+                        name of Proxmox authentication token for user
+  -ptv PROXMOX_TOKEN_VALUE, --proxmox-token-value PROXMOX_TOKEN_VALUE
+                        value of Proxmox authentication token
+  -pn PROXMOX_NODE, --proxmox-node PROXMOX_NODE
+                        node containing virtual machines to template
+  -f CONFIGURE_FIREWALL, --configure-firewall CONFIGURE_FIREWALL
+                        True/False - whether or not to configure pfSense firewall (useful for scripted/unattended
+                        installation)
+  -fH FIREWALL_HOST, --firewall-host FIREWALL_HOST
+                        hostname of pfSense firewall to configure DHCP on through SSH
+  -fP FIREWALL_PORT, --firewall-port FIREWALL_PORT
+                        SSH port for the pfSense firewall (default is 22)
+  -fu FIREWALL_USER, --firewall-user FIREWALL_USER
+                        username for the pfSense firewall
+  -fp FIREWALL_PASSWORD, --firewall-password FIREWALL_PASSWORD
+                        password for the pfSense firewall
+  -ft FIREWALL_TIMEOUT, --firewall-timeout FIREWALL_TIMEOUT
+                        time in seconds before connection to pfSense times out (default is 5)
+  -fc FIREWALL_CONFIG, --firewall-config FIREWALL_CONFIG
+                        path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless
+```
+#### [Template](scripts/template.py)
 ```
 usage: convert Proxmox virtual machines into clonable templates [-h] [-r] [-v] [-pH PROXMOX_HOST]
                                                                 [-pu PROXMOX_USER]
@@ -65,7 +107,7 @@ options:
   -pn PROXMOX_NODE, --proxmox-node PROXMOX_NODE
                         node containing virtual machines to template
 ```
-#### [Clone](clone.py)
+#### [Clone](scripts/clone.py)
 ```
 usage: clone Proxmox virtual machine templates [-h] [-c CLONE_NAME] [-i CLONE_BEGIN_ID]
                                                [-t {linked,full}] [-s] [-u [USER]] [-n NAME]
@@ -162,7 +204,7 @@ options:
                         path to configuration file in pfSense - this should be /cf/conf/config.xml
                         (default) unless using a customised pfSense instance
 ```
-#### [Purge](purge.py)
+#### [Purge](scripts/purge.py)
 ```
 usage: purge Proxmox virtual machines and corresponding Linux bridge [-h] [-u [USER]] [-b]
                                                                      [-bv BRIDGED_VMS] [-f] [-v]
@@ -216,4 +258,35 @@ options:
   -fc FIREWALL_CONFIG, --firewall-config FIREWALL_CONFIG
                         path to configuration file in pfSense - this should be /cf/conf/config.xml
                         (default) unless using a customised pfSense instance
+```
+#### [PUser](scripts/puser.py)
+```
+usage: manage Proxmox users [-h] [-u USERNAME] [-f USERS_FILE] [-p PASSWORD] [-g GROUPS [GROUPS ...]] [-pH PROXMOX_HOST] [-pu PROXMOX_USER] [-pp PROXMOX_PASSWORD] [-ptn PROXMOX_TOKEN_NAME] [-ptv PROXMOX_TOKEN_VALUE] [-ssl]
+                            {create,passwd,destroy}
+
+positional arguments:
+  {create,passwd,destroy}
+                        create new user, change an existing user's password, or destroy an existing user
+
+options:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        name of user
+  -f USERS_FILE, --users-file USERS_FILE
+                        path to file containing users - each user on a separate line with format <username> or <username>,<password>
+  -p PASSWORD, --password PASSWORD
+                        password to assign to user
+  -g GROUPS [GROUPS ...], --groups GROUPS [GROUPS ...]
+                        groups to add new Proxmox user(s) to (space-separated)
+  -pH PROXMOX_HOST, --proxmox-host PROXMOX_HOST
+                        Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)
+  -pu PROXMOX_USER, --proxmox-user PROXMOX_USER
+                        Proxmox username for authentication
+  -pp PROXMOX_PASSWORD, --proxmox-password PROXMOX_PASSWORD
+                        Proxmox password for authentication
+  -ptn PROXMOX_TOKEN_NAME, --proxmox-token-name PROXMOX_TOKEN_NAME
+                        name of Proxmox authentication token for user
+  -ptv PROXMOX_TOKEN_VALUE, --proxmox-token-value PROXMOX_TOKEN_VALUE
+                        value of Proxmox authentication token
+  -ssl, --verify-ssl    verify SSL certificate on Proxmox host
 ```
