@@ -4,6 +4,7 @@ import argparse
 import time
 from threading import Thread
 from proxmoxer import ProxmoxAPI
+from colors import printc, Color
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
@@ -38,7 +39,7 @@ def valid_ids(ids, accept=[]):
 		if vmid in vmids or vmid in accept:
 			valid.append(vmid)
 		else:
-			print(f'\033[33mNo virtual machine or template found with ID {vmid}\033[0m')
+			printc(f'No virtual machine or template found with ID {vmid}', Color.YELLOW)
 	return valid
 
 # Check virtual machine status every 5 seconds until it has finished cloning
@@ -77,19 +78,19 @@ parser.add_argument('-dd', '--dhcp-dns', type=str, nargs='+', help='DNS servers 
 parser.add_argument('-ds', '--dhcp-static', type=static_ip, nargs='+', help='DHCP static lease for bridged VM with specified ID or clone created from template with specified ID - format is <ID>,<IP> (ex. 500,10.0.2.2 402,10.0.2.3)')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
-parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
-parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='PROXMOXHOST', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', help='Proxmox username for authentication')
+parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to template')
 
-parser.add_argument('-fH', '--firewall-host', type=str, default='[REDACTED]', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
-parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
-parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
-parser.add_argument('-fp', '--firewall-password', type=str, default='[REDACTED]', help='password for the pfSense firewall (requires -f)')
-parser.add_argument('-ft', '--firewall-timeout', type=float, default=5, help='time in seconds before connection to pfSense times out (default is 5)')
-parser.add_argument('-fc', '--firewall-config', type=str, default='/cf/conf/config.xml', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
+parser.add_argument('-fH', '--firewall-host', type=str, default='FIREWALLHOST', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
+parser.add_argument('-fP', '--firewall-port', type=int, default=FIREWALLPORT, help='SSH port for the pfSense firewall (default is 22)')
+parser.add_argument('-fu', '--firewall-user', type=str, default='FIREWALLUSER', help='username for the pfSense firewall (requires -f)')
+parser.add_argument('-fp', '--firewall-password', type=str, default='FIREWALLPASS', help='password for the pfSense firewall (requires -f)')
+parser.add_argument('-ft', '--firewall-timeout', type=float, default=FIREWALLTIMEOUT, help='time in seconds before connection to pfSense times out (default is 5)')
+parser.add_argument('-fc', '--firewall-config', type=str, default='FIREWALLCONFIG', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
 args = parser.parse_args()
 
@@ -182,7 +183,7 @@ if args.create_bridge:
 	print(f'Creating new Linux bridge')
 	pm.nodes(args.proxmox_node).network.post(**params)
 	pm.nodes(args.proxmox_node).network.put()
-	print(f'\033[32mCreated new Linux bridge with name {iface}!\033[0m\n')
+	printc(f'Created new Linux bridge with name {iface}!\n', Color.GREEN)
 
 print(f'Finding available IDs for clones, starting at ID {args.clone_begin_id}')
 clone_ids = []
@@ -229,7 +230,7 @@ for i, vmid in enumerate(ids):
 # Wait for all threads to complete (all virtual machines cloned) to continue
 for thread in threads:
 	thread.join()
-print('\033[32mAll virtual machine templates cloned successfully!\033[0m\n')
+printc('All virtual machine templates cloned successfully!\n', Color.GREEN)
 
 if args.create_bridge:
 	#bridged += clone_ids
@@ -277,7 +278,7 @@ if args.create_bridge:
 			static[mac] = ip
 			del static[vmid]
 
-	print('\033[32mLinux bridge added to all desired virtual machines!\033[0m\n')
+	printc('Linux bridge added to all desired virtual machines!\n', Color.GREEN)
 
 	if args.firewall:
 		import paramiko
@@ -340,7 +341,7 @@ if args.create_bridge:
 			netaddr, subnet = args.bridge_subnet.split('/')
 			ipaddr = args.firewall_ip if args.firewall_ip else netaddr[:-1] + str(int(netaddr[-1:])+1)
 
-			#subelement(new, 'descr', text=ET.CDATA(args.clone_name)
+			#subelement(new, 'descr', text=ET.CDATA(args.clone_name))
 			subelement(new, 'descr', text=args.clone_name)
 			subelement(new, 'if', text=interface)
 			subelement(new, 'enable')
@@ -470,39 +471,45 @@ if args.create_bridge:
 			ssh.close()
 
 		if success:
-			print(f'\033[32mpfSense firewall configured and serving DHCP for bridge {iface}!\033[0m\n')
+			printc(f'pfSense firewall configured and serving DHCP for bridge {iface}!\n', Color.GREEN)
 		else:
-			print('\033[31mpfSense firewall not configured! Please see errors above.\033[0m\n')
+			printc('pfSense firewall not configured! Please see errors above.\n', Color.RED)
 
 if args.user:
 	print(f'Creating Proxmox VE user {userid}')
 
-	params = {}
+	users = pm.access.users.get()
+	userids = [user['userid'] for user in users]
 
-	params['userid'] = userid
-	params['groups'] = ','.join(args.groups) if args.groups and len(args.groups)>0 else ''
-	params['email'] = args.email if args.email else ''
-
-	proxmox_name = args.name if args.name else ''
-	words = proxmox_name.split(' ')
-	if len(words) < 2:
-		params['firstname'] = proxmox_name
-		params['lastname'] = ''
+	if userid in userids:
+		print(f'Proxmox VE user {userid} already exists!\n', Color.YELLOW)
 	else:
-		params['firstname'] = words[0]
-		params['lastname'] = words[len(words)-1]
+		params = {}
 
-	if args.password:
-		params['password'] = args.password
-	else:
-		import random, string
-		print('Generating random password for Proxmox user')
-		password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
-		print(f'Randomly-generated password: {password}')
-		params['password'] = password
+		params['userid'] = userid
+		params['groups'] = ','.join(args.groups) if args.groups and len(args.groups)>0 else ''
+		params['email'] = args.email if args.email else ''
 
-	pm.access.users.post(expire=0, **params)
-	print(f'\033[32mCreated Proxmox VE user {userid}!\033[0m\n')
+		proxmox_name = args.name if args.name else ''
+		words = proxmox_name.split(' ')
+		if len(words) < 2:
+			params['firstname'] = proxmox_name
+			params['lastname'] = ''
+		else:
+			params['firstname'] = words[0]
+			params['lastname'] = words[len(words)-1]
+
+		if args.password:
+			params['password'] = args.password
+		else:
+			import random, string
+			print('Generating random password for Proxmox user')
+			password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+			print(f'Randomly-generated password: {password}')
+			params['password'] = password
+
+		pm.access.users.post(expire=0, **params)
+		printc(f'Created Proxmox VE user {userid}!\n', Color.GREEN)
 	
 	print('Assigning permissions to user')
 	for vmid in clone_ids:
@@ -514,7 +521,7 @@ if args.user:
 		params['roles'] = args.roles
 
 		pm.access.acl.put(propagate=1, **params)
-	print(f'\033[32mUser {userid} granted access to all cloned virtual machines!\033[0m\n')
+	printc(f'User {userid} granted access to all cloned virtual machines!\n', Color.GREEN)
 
 if args.start_clone:
 	print('Starting virtual machine clones')
@@ -525,4 +532,4 @@ if args.start_clone:
 		print(f'Starting virtual machine with ID {vmid}')
 		pm.nodes(args.proxmox_node).qemu(vmid).status.start.post()
 	
-	print('\033[32mAll virtual machine clones have been started!\033[0m')
+	printc('All virtual machine clones have been started!', Color.GREEN)

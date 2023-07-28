@@ -4,6 +4,7 @@ import argparse
 import time
 from threading import Thread
 from proxmoxer import ProxmoxAPI
+from colors import printc, Color
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
@@ -51,19 +52,19 @@ parser.add_argument('-bv', '--bridged-vms', type=num_list, help='check virtual m
 parser.add_argument('-f', '--firewall', action='store_true', help='remove interface and DHCP from pfSense firewall configuration (requires -b)')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
-parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
-parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='PROXMOXHOST', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', help='Proxmox username for authentication')
+parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to template')
 
-parser.add_argument('-fH', '--firewall-host', type=str, default='[REDACTED]', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
-parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
-parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
-parser.add_argument('-fp', '--firewall-password', type=str, default='[REDACTED]', help='password for the pfSense firewall (requires -f)')
-parser.add_argument('-ft', '--firewall-timeout', type=float, default=5, help='time in seconds before connection to pfSense times out (default is 5)')
-parser.add_argument('-fc', '--firewall-config', type=str, default='/cf/conf/config.xml', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
+parser.add_argument('-fH', '--firewall-host', type=str, default='FIREWALLHOST', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
+parser.add_argument('-fP', '--firewall-port', type=int, default=FIREWALLPORT, help='SSH port for the pfSense firewall (default is 22)')
+parser.add_argument('-fu', '--firewall-user', type=str, default='FIREWALLUSER', help='username for the pfSense firewall (requires -f)')
+parser.add_argument('-fp', '--firewall-password', type=str, default='FIREWALLPASS', help='password for the pfSense firewall (requires -f)')
+parser.add_argument('-ft', '--firewall-timeout', type=float, default=FIREWALLTIMEOUT, help='time in seconds before connection to pfSense times out (default is 5)')
+parser.add_argument('-fc', '--firewall-config', type=str, default='FIREWALLCONFIG', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
 args = parser.parse_args()
 
@@ -92,7 +93,7 @@ if args.user:
 
 	print(f'Removing Proxmox VE user {userid}')
 	pm.access.users(userid).delete()
-	print(f'\033[32mRemoved Proxmox VE user {userid}!\033[0m\n')
+	printc(f'Removed Proxmox VE user {userid}!\n', Color.GREEN)
 
 # Get IDs of virtual machines in Proxmox whose name starts with args.clone_name
 print('Checking for virtual machines to remove')
@@ -128,7 +129,7 @@ for vmid in clone_ids:
 # Wait for all threads to complete (all virtual machines shut down) to continue
 for thread in threads:
 	thread.join()
-print('\033[32mAll specified virtual machines have been stopped!\033[0m\n')
+printc('All specified virtual machines have been stopped!\n', Color.GREEN)
 
 print('Removing virtual machines')
 for vmid in clone_ids:
@@ -138,7 +139,7 @@ for vmid in clone_ids:
 		'destroy-unreferenced-disks': 1
 	}
 	pm.nodes(args.proxmox_node).qemu(vmid).delete(**purge_params)
-print(f'\033[32mRemoved all virtual machines whose name started with {name}!\033[0m\n')
+printc(f'Removed all virtual machines whose name started with {name}!\n', Color.GREEN)
 
 if args.remove_bridges:
 	print('Checking for Linux bridges to remove')
@@ -153,7 +154,7 @@ if args.remove_bridges:
 
 	print("Committing changes to the node's interfaces file")
 	pm.nodes(args.proxmox_node).network.put()
-	print(f'\033[32mRemoved all Linux bridges with comment {args.clone_name}!\033[0m\n')
+	printc(f'Removed all Linux bridges with comment {args.clone_name}!\n', Color.GREEN)
 
 	print('Checking specified virtual machines for any network devices associated with removed bridges')
 	for vmid in bridged:
@@ -175,7 +176,7 @@ if args.remove_bridges:
 							print(f'Network device {device} found connected to removed bridge {bridge}')
 							print(f'Removing network device {device} from virtual machine {vmid}')
 							pm.nodes(args.proxmox_node).qemu(vmid).config.put(delete=device)
-	print('\033[32mRemoved all network devices associated with removed bridges!\033[0m\n')
+	printc('Removed all network devices associated with removed bridges!\n', Color.GREEN)
 
 if args.firewall:
 	import paramiko
@@ -272,6 +273,6 @@ if args.firewall:
 		ssh.close()
 
 	if success:
-		print(f'\033[32mAll destroyed interfaces removed from pfSense configuration!\033[0m')
+		printc(f'All destroyed interfaces removed from pfSense configuration!', Color.GREEN)
 	else:
-		print('\033[31mpfSense firewall not configured! Please see errors above.\033[0m')
+		printc('pfSense firewall not configured! Please see errors above.', Color.RED)

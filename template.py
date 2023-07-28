@@ -4,6 +4,7 @@ import argparse
 import time
 from threading import Thread
 from proxmoxer import ProxmoxAPI
+from colors import printc, Color
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
@@ -35,12 +36,12 @@ parser.add_argument('ids', type=num_list, help='IDs of virtual machines to templ
 parser.add_argument('-r', '--remove-network', action='store_true', help='remove all network devices from virtual machine templates')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='[REDACTED]', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
-parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
-parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='[REDACTED]', help='value of Proxmox authentication token')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='PROXMOXHOST', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', help='Proxmox username for authentication')
+parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='[REDACTED]', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to template')
 
 args = parser.parse_args()
 
@@ -73,12 +74,12 @@ all_ids = []
 for vmid in args.ids:
 	if vmid in vmids:
 		if templated[vmid]:
-			print(f'\033[33mVirtual machine with ID {vmid} is already a template\033[0m')
+			printc(f'Virtual machine with ID {vmid} is already a template', Color.YELLOW)
 		else:
 			ids.append(vmid)
 		all_ids.append(vmid)
 	else:
-		print(f'\033[33mNo virtual machine found with ID {vmid}\033[0m')
+		printc(f'No virtual machine found with ID {vmid}', Color.YELLOW)
 
 print('Shutting down virtual machines')
 for vmid in ids:
@@ -98,7 +99,7 @@ for vmid in ids:
 # Wait for all threads to complete (all virtual machines shut down) to continue
 for thread in threads:
 	thread.join()
-print('\033[32mAll specified virtual machines have been shut down!\033[0m\n')
+printc('All specified virtual machines have been shut down!\n', Color.GREEN)
 
 print('Converting virtual machines to templates')
 for vmid in ids:
@@ -109,11 +110,11 @@ for vmid in ids:
 success = True
 for vmid in ids:
 	if pm.nodes(args.proxmox_node).qemu(vmid).status.current.get()['template'] != 1:
-		print(f'\033[31mFailed to create template for virtual machine with ID {vmid}\033[0m')
+		printc(f'Failed to create template for virtual machine with ID {vmid}', Color.RED)
 		success = False
 
 if success:
-	print(f'\033[32mAll specified virtual machines have been converted to templates!\033[0m\n')
+	printc(f'All specified virtual machines have been converted to templates!\n', Color.GREEN)
 
 	if args.remove_network:
 		print('Removing network devices from all templates')
@@ -128,4 +129,4 @@ if success:
 				pm.nodes(args.proxmox_node).qemu(vmid).config.put(delete=device)
 			print(f'Removed all network devices for virtual machine templates with ID {vmid}')
 		
-		print('\033[32mRemoved network devices from all templates!\033[0m')
+		printc('Removed network devices from all templates!', Color.GREEN)
