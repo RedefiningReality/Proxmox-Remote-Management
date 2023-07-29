@@ -14,7 +14,7 @@ Specifying password **Sup3rS3cr3tP@ss123!** for **admin** overrides the default 
 
 - `puser create -f creds.csv` ⇒ create users in *creds.csv* with random passwords by default ***OR***
 - `puser create -f creds.csv -p changeme` ⇒ create users in *creds.csv* with default password **changeme**
-  - You can easly remove these users with `puser destroy -f creds.csv`
+  - You can later easly remove these users with `puser destroy -f creds.csv`
 - `puser create -f creds.csv -u newstudent -p ijustjoined` ⇒ create user **newstudent** with password **ijustjoined**
 - `puser passwd -f creds.csv -pu david -pp changeme -u david -p secretlyAgent47` ⇒ change **david**'s password to **secretlyAgent47** (authenticating as **david**)
 - `puser destroy -f creds.csv -u graduatingjohn` ⇒ remove user **graduatingjohn**
