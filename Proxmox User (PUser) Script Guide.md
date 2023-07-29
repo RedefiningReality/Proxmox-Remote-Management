@@ -19,7 +19,8 @@ Specifying a password (comma-separated) for admin overrides the default password
 - `puser passwd -f creds.txt -pu david -pp changeme -u david -p secretlyAgent47` ⇒ change **david**'s password to **secretlyAgent47** (authenticating as **david**)
 - `puser destroy -f creds.txt -u graduatingjohn` ⇒ remove user **graduatingjohn**
 
-All of the above commands commit all changes to the *creds.txt* file, which should now look as follows (assuming you ran the 2nd command instead of the first):
+All of the above commands commit changes to the *creds.txt* file.
+It should now look as follows (assuming you ran all of the above except `puser create -f creds.txt`):
 ```
 newstundent,ijustjoined
 david,secretlyAgent47
