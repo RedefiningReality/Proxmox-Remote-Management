@@ -1,7 +1,7 @@
 # Proxmox User (PUser) Script Guide
 
 ### Sample Usage
-Assume we have file *creds.txt* with the following contents:
+Assume we have file *creds.csv* with the following contents:
 ```
 david
 graduatingjohn
@@ -12,15 +12,15 @@ xinrui
 ```
 Specifying a password (comma-separated) for admin overrides the default password in the following `puser create` commands.
 
-- `puser create -f creds.txt` ⇒ create users in *creds.txt* with random passwords by default ***OR***
-- `puser create -f creds.txt -p changeme` ⇒ create users in *creds.txt* with default password **changeme**
-  - You can easly undo the above two commands with `puser destroy -f creds.txt`
-- `puser create -f creds.txt -u newstudent -p ijustjoined` ⇒ create user **newstudent** with password **ijustjoined**
-- `puser passwd -f creds.txt -pu david -pp changeme -u david -p secretlyAgent47` ⇒ change **david**'s password to **secretlyAgent47** (authenticating as **david**)
-- `puser destroy -f creds.txt -u graduatingjohn` ⇒ remove user **graduatingjohn**
+- `puser create -f creds.csv` ⇒ create users in *creds.csv* with random passwords by default ***OR***
+- `puser create -f creds.csv -p changeme` ⇒ create users in *creds.csv* with default password **changeme**
+  - You can easly undo the above two commands with `puser destroy -f creds.csv`
+- `puser create -f creds.csv -u newstudent -p ijustjoined` ⇒ create user **newstudent** with password **ijustjoined**
+- `puser passwd -f creds.csv -pu david -pp changeme -u david -p secretlyAgent47` ⇒ change **david**'s password to **secretlyAgent47** (authenticating as **david**)
+- `puser destroy -f creds.csv -u graduatingjohn` ⇒ remove user **graduatingjohn**
 
-All of the above commands push changes to the *creds.txt* file.
-It should now look as follows (assuming you ran all of the above except `puser create -f creds.txt`):
+All of the above commands push changes to the *creds.csv* file.
+It should now look as follows (assuming you ran all of the above except `puser create -f creds.csv`):
 ```
 newstundent,ijustjoined
 david,secretlyAgent47
@@ -30,11 +30,18 @@ jafar,changeme
 xinrui,changeme
 ```
 
-- `puser destroy -f creds.txt` ⇒ remove all users in *creds.txt* from Proxmox (no changes made to the file)
-  - You can easily undo this with `puser create -f creds.txt`
+- `puser destroy -f creds.csv` ⇒ remove all users in *creds.csv* from Proxmox (no changes made to the file)
+  - You can easily undo this with `puser create -f creds.csv`
 
 ### Documentation
-File about
+The `-f` option in the following commands allows specifying a credentials file that will be updated according to changes made by this script. Such a file would be useful for administrative purposes (such as to check a user's password) and useful for quickly creating or destroying a large set of users. The file has the following format:
+- each user is specified on a separate line in the following format: `[user],[password]`
+- passwords must not contain a comma (,)
+For example, to specify users **user1** and **user2** with corresponding passwords **password1** and **password2**, the file would look as follows:
+```
+user1,password1
+user2,password2
+```
 
 #### Create
 `puser create -u [user] -p [password]`
@@ -96,7 +103,7 @@ File about
 
 `puser destroy -f [file]`
 - removes users in file (if they exist)
-Does not make changes to the file
+  - Does not make changes to the file
 
 `puser destroy -f [file] -u [user]`
 - removes a *single user*
