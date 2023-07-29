@@ -39,42 +39,53 @@ File about
 #### Create
 `create -u [user] -p [password]`
 - creates a single user with given password
+
 `create -u [user]`
 - creates a single user with random password
+
 `create -f [file]`
 - creates users defined in file (if they don't already exist)
 - assigns users their corresponding password specified in file
 - if no password is specified in file, assigns random password
 - updates passwords in file
+
 `create -f [file] -p [password]`
 - creates users defined in file (if they don't already exist)
 - assigns users their corresponding password specified in file
 - if no password is specified in file, assigns provided password `[password]`
+
 `create -f [file] -u [user] -p [password]`
 - creates a *single user* with given password
 - adds the user and password to the file
+
 `create -f [file] -u [user]`
 - creates a *single user* with random password
 - adds the user and password to the file
 
 #### Change Password
 **Note:** Proxmox does not support API token authentication for changing passwords, which is used in these scripts by default. To change passwords, you'll have to specify the password for your administrative user with `-pp [password]` or specify the current username and password for the user whose password you're changing with `-pu [user] -pp [password]`. This information will be used for ticket authentication.
+
 `passwd -u [user] -p [password]`
 - changes password for a single user to the given password
+
 `passwd -u [user]`
 - changes password for a single user to a random password
+
 `passwd -f [file]`
 - changes password for all users defined in file
 - assigns users their corresponding password specified in file
 - if no password is specified in file, assigns random password
 - updates passwords in file
+
 `passwd -f [file] -p [password]`
 - changes password for all users defined in file
 - assigns *all users* password `[password]`
 - updates passwords in file
+
 `passwd -f [file] -u [user] -p [password]`
 - changes password for a *single user* with given password
 - updates password in file
+
 `passwd -f [file] -u [user]`
 - changes password for a *single user* with random password
 - updates password in file
