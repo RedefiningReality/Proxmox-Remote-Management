@@ -39,6 +39,7 @@ Additional notes about the setup script:
 `purge doge -u -b -bv 400,402 -f`
 
 ### Usage information
+The help screens for each command should make enough sense to warrant not writing other documentation. However, puser has [its own page](Proxmox%20User%20(PUser)%20Script%20Guide.md) that's worth checking out.
 #### [Setup](scripts/setup.py)
 ```
 usage: setup Proxmox automated environment scripts [-h] [-b] [-p ADD_TO_PATH] [-pH PROXMOX_HOST] [-pu PROXMOX_USER]
