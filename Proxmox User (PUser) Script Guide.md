@@ -10,7 +10,7 @@ admin,Sup3rS3cr3tP@ss123!
 jafar
 xinrui
 ```
-Specifying a password for admin overrides the default password in the `puser create` commands.
+Specifying a password (comma-separated) for admin overrides the default password in the `puser create` commands.
 
 - `puser create -f creds.txt` ⇒ create users in *creds.txt* with random passwords by default ***OR***
 - `puser create -f creds.txt -p changeme` ⇒ create users in *creds.txt* with default password **changeme**
