@@ -34,7 +34,7 @@ xinrui,changeme
   - You can easily undo this with `puser create -f creds.csv`
 
 ### Documentation
-The `-f` option in the following commands allows specifying a credentials file that will be updated according to changes made by this script. Such a file would be useful for administrative purposes (such as to check a user's password) and useful for quickly creating or destroying a large set of users. The file has the following format:
+The `-f` option in the following commands allows specifying a credentials file that will be updated according to changes made by this script. Such a file would be useful for administrative purposes (such as checking a user's password) and useful for quickly creating or destroying a large set of users. The file has the following format:
 - each user is specified on a separate line in the following format: `[user],[password]`
 - passwords must not contain a comma (,)
 For example, to specify users **user1** and **user2** with corresponding passwords **password1** and **password2**, the file would look as follows:
