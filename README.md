@@ -3,8 +3,8 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 
 ### Setup
 **Note:** Requires Python 3
-pip installation to be created in the near future
 
+pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management-Scripts.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management-Scripts`
