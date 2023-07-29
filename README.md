@@ -18,7 +18,7 @@ ln -s easypurge.sh /usr/bin/easypurge
 Additional notes about the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
-- If you'd like to perform a fully unattended installation (no prompts), use `-f [True/False]` to specify whether you're using a pfSense firewall or not and `-p [True/False]` to specify whether you'd like to add the finished scripts to your PATH (Linux only) -> be sure you specify all other options!
+- If you'd like to perform a fully unattended installation (no prompts), use `-f [True/False]` to specify whether you're using a pfSense firewall and `-p [True/False]` to specify whether you'd like to add the finished scripts to your PATH (Linux only) -> be sure you specify all other options!
 
 ### Commands
 - [template](scripts/template.py) ⇒ convert Proxmox virtual machines into clonable templates
