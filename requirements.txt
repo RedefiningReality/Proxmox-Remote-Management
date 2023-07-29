@@ -1,0 +1,4 @@
+proxmoxer>=2.0.1
+requests>=2.28.2
+paramiko>=2.12.0
+scp>=0.14.5
