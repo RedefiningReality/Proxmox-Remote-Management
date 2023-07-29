@@ -482,7 +482,7 @@ if args.user:
 	userids = [user['userid'] for user in users]
 
 	if userid in userids:
-		print(f'Proxmox VE user {userid} already exists!\n', Color.YELLOW)
+		printc(f'Proxmox VE user {userid} already exists!\n', Color.YELLOW)
 	else:
 		params = {}
 
