@@ -7,7 +7,7 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 2. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Management-Scripts.git`
 3. Enter the cloned directory: `cd Proxmox-Management-Scripts`
-4. Run the [setup script](scripts/setup.py): `./setup.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
+4. Run the [setup script](scripts/setup.py): `./setup.py` or `python setup.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
 6. Modify [easyclone.sh](easyclone.sh) and [easypurge.sh](easypurge.sh) to your liking. See comments in each script.
 You can add these to your PATH so that they may be executed as commands with the following:
 ```
