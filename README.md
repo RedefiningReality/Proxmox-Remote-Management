@@ -25,7 +25,7 @@ Additional notes about the setup script:
 - [clone](scripts/clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
 - [purge](scripts/purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
 - [puser](scripts/puser.py) ⇒ create, destroy, and change passwords for Proxmox users
-  - for more information, consult the [puser guide](Proxmox User (PUser) Script Guide.md)
+  - for more information, consult the [puser guide](Proxmox%20User%20(PUser)%20Script%20Guide.md)
 - [easyclone](scripts/easyclone.sh) ⇒ template bash script that runs [clone](scripts/clone.py) with a set of predefined arguments
 - [easypurge](scripts/easypurge.sh) ⇒ template bash script that runs [purge](scripts/purge.py) with a set of predefined arguments
 
