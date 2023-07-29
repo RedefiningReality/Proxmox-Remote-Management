@@ -91,3 +91,13 @@ File about
 - updates password in file
 
 #### Destroy
+`puser destroy -u [user]`
+- removes a single user
+
+`puser destroy -f [file]`
+- removes users in file (if they exist)
+Does not make changes to the file
+
+`puser destroy -f [file] -u [user]`
+- removes a *single user*
+- deletes user's info from file
