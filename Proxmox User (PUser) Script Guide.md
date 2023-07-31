@@ -99,7 +99,7 @@ user2,password2
 
 #### Destroy
 To destroy users' environments along with the users themselves, you may add these options to any `puser destroy` command:
-- `-c [purge command]` ⇒ path to purge script, if `[purge command]` is not specified, will default to `purge` (assume script is in path)
+- `-c [purge command]` ⇒ path to purge script, if `[purge command]` is not specified but `-c` is, will default to `purge` (assume script is in path)
   - if you installed with `setup.py` and the purge script is in your path, just use `-c` by itself
 - `-b` ⇒ remove any Proxmox bridge with username as its description
 - `-bv [bridged vms]` ⇒ check additional virtual machines for interfaces connected to that bridge - remove those as well
