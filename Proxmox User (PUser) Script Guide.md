@@ -106,7 +106,7 @@ To destroy users' environments along with the users themselves, you may add thes
 - `-fw` ⇒ remove interface and DHCP from pfSense firewall configuration
 
 **Note:** This will run the purge script for each user in the file, passing in the provided arguments.
-The `-b`, `-bv`, and `-fw` options correspond to the `-b`, `-bv`, and `-f` arguments of the purge script.
+The `-b`, `-bv`, and `-fw` arguments correspond to the `-b`, `-bv`, and `-f` arguments of the purge script.
 
 `puser destroy -u [user]`
 - removes a single user
