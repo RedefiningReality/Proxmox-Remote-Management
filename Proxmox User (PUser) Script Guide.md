@@ -98,6 +98,16 @@ user2,password2
 - updates password in file
 
 #### Destroy
+To destroy environments for users along with the users themselves, you may add these options to any `puser destroy` command:
+- `-c [purge command]` ⇒ path to purge script, if `[purge command]` is not specified, will default to `purge` (assume script is in path)
+  - if you installed with `setup.py` and the purge script is in your path, just use `-c` by itself
+- `-b` ⇒ remove any Proxmox bridge with username as its description
+- `-bv [bridged vms]` ⇒ check additional virtual machines for interfaces connected to that bridge - remove those as well
+- `-fw` ⇒ remove interface and DHCP from pfSense firewall configuration
+
+**Note:** This will run the purge script for each user in the file, passing in the provided arguments.
+The `-b`, `-bv`, and `-fw` options correspond to the `-b`, `-bv`, and `-f` arguments of the purge script.
+
 `puser destroy -u [user]`
 - removes a single user
 
