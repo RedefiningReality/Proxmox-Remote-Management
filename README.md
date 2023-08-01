@@ -9,4 +9,4 @@ Manage users, create templates from virtual machines, clone environments (groups
 If you're interested in the **command line scripts**, see the **[scripts guide](Scripts.md)**.
 If you're interested in the **PHP website**, see the **[web guide](Web.md)**.
 
-The [puser](scripts/puser.py), responsible for remotely managing Proxmox users in bulk, has [its own guide](Proxmox%20User%20(PUser)%20Guide.md) as well.
+The [puser](scripts/puser.py) script, responsible for remotely managing Proxmox users in bulk, has [its own guide](Proxmox%20User%20(PUser)%20Script%20Guide.md) as well.
