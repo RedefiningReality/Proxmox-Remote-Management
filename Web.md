@@ -1,6 +1,6 @@
 # Proxmox and pfSense Remote Management Website
 
-A basic web interface that allows users to . Environment and user options are configured by you in the [config.ini](web/config.ini) file, which has detailed comments explaining each option. This uses the Python remote management scripts for its backend. More information about the scripts may be found [here](Scripts.md).
+A basic web interface that allows users to manage their access to Proxmox and create/revert/destroy one instance of an environment, within parameters that you define. These paramateres are defined in the [config.ini](web/config.ini) file, which has detailed comments explaining each option. This uses the Python remote management scripts for its backend. More information about the scripts may be found [here](Scripts.md).
 
 ### Setup
 **Note:** Requires Python 3. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
@@ -29,3 +29,16 @@ Additional notes about the setup script:
 - If you'd like to perform a fully unattended installation (no prompts), use `-f [True/False]` to specify whether you're using a pfSense firewall, `-d [True/False]` to specify whether you'd like to automatically install Python dependencies using pip, and `-p [True/False]` to specify whether you'd like to add the finished scripts to your PATH (Linux only) -> be sure you specify all other options!
 
 ### Pages
+- [config.ini](web/config.ini) ⇒ configuration file containing every parameter that can be modified to suit your needs
+- [index.php](web/index.php) ⇒ the main page that provides users with the option to create, access, revert, or destroy their instance as well as change their password or sign out of their account
+  - redirects to login.php if user is not logged in or if session expired
+  - redirects to password.php if user has a default password that the admin wants changed - see **change_password** option in config.ini
+  - prints generic error message if unable to connect to Proxmox and logs details in error log
+- [login.php](web/login.php) ⇒ login page that forwards login information to Proxmox and creates a new session for valid users
+  - redirects to index.php upon login or if user is already logged in
+- [password.php](web/password.php) ⇒ accessible from index.php, allows a user to change their password
+  - password information can be automatically updated in an admin-accessible file if desired using the **creds_file** option in config.ini
+  - redirects to index.php on successful password change
+- [register.php](web/register.php) ⇒ accessible from login.php, allows registering a new user given an instructor-provided access code
+  - forwards credentials to Proxmox and creates a new user with limited privileges directly on Proxmox
+  - optional and may be disabled with **register** option in config.ini
