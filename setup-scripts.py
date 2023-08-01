@@ -5,11 +5,13 @@ import platform
 import socket
 from proxmoxer import ProxmoxAPI, ResourceException
 from colors import printc, Color
+import os, sys, subprocess
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 
-scripts = ['template.py', 'clone.py', 'purge.py', 'puser.py']
+scripts = ['scripts/template.py', 'scripts/clone.py', 'scripts/purge.py', 'scripts/puser.py']
+dependencies = ['proxmoxer', 'requests', 'paramiko', 'scp']
 
 def is_int(num):
     try:
@@ -47,6 +49,7 @@ def replace(file, params):
 parser = argparse.ArgumentParser('setup Proxmox automated environment scripts')
 
 parser.add_argument('-b', '--bypass-checks', action='store_true', help='Bypass all checks to ensure correct values were entered (useful if you haven\'t finished setting up Proxmox)')
+parser.add_argument('-d', '--script-dependencies', type=bool, help='True/False - Install script dependencies using the pip package manager')
 parser.add_argument('-p', '--add-to-path', type=bool, help='True/False - whether or not to add scripts to PATH (Linux only - useful for scripted/unattended installation)')
 
 parser.add_argument('-pH', '--proxmox-host', type=str, help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.122:443)')
@@ -203,6 +206,7 @@ if not args.configure_firewall:
     args.firewall_user = 'root'
     args.firewall_password = 'password'
     args.firewall_config = '/cf/conf/config.xml'
+    print()
 
 params = {
     'PROXMOXHOST': args.proxmox_host,
@@ -219,7 +223,21 @@ params = {
     'FIREWALLCONFIG': args.firewall_config
 }
 
-print('\nUpdating script files to reflect provided information')
+if args.script_dependencies is None:
+    args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
+
+if args.script_dependencies:
+    print('Installing script dependencies with pip package manager')
+    command = [sys.executable, '-m', 'pip', 'install']
+    command.extend(dependencies)
+    proc = subprocess.run(command)
+
+    if proc.returncode == 0:
+        printc('Script dependencies installed!\n', Color.GREEN)
+    else:
+        printc('Failed to install dependencies!', Color.RED)
+
+print('Updating script files to reflect provided information')
 for script in scripts:
     replace(script, params)
 printc('All script files updated accordingly!\n', Color.GREEN)
@@ -229,7 +247,6 @@ if platform.system() == 'Linux':
         args.add_to_path = input('Add script links to PATH so you can run them as commands? [Y/n]: ').lower() != 'n'
 
     if args.add_to_path:
-        import os
         acceptable = os.getenv('PATH')
         if acceptable is None or acceptable == '':
             printc('PATH environment variable not found!', Color.RED)
