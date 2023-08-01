@@ -42,3 +42,32 @@ Additional notes about the setup script:
 - [register.php](web/register.php) ⇒ accessible from login.php, allows registering a new user given an instructor-provided access code
   - forwards credentials to Proxmox and creates a new user with limited privileges directly on Proxmox
   - optional and may be disabled with **register** option in config.ini
+- [test.php](web/test.php) ⇒ test script to ensure environment options in config.ini have been configured correctly
+  - usage explained above in Setup section
+  - ***REMOVE OR DISABLE THIS WHEN SATISFIED WITH YOUR CONFIGURATION***
+- [scripts.php](web/scripts.php) ⇒ inaccessible to users, dependency that is used by index.php to run scripts from the command line
+  - this will render as a blank page and do nothing if accessed from a web browser
+- [creds.php](web/creds.php) ⇒ inaccessible to users, dependency that is used by register.php and login.php to update credentials in credentials file
+  - credentials file can be set using the **creds_file** option in config.ini
+  - this will render as a blank page and do nothing if accessed from a web browser
+
+### Known Vulnerabilities and Why I Don't Give a D*mn
+I created this platform to facilitate teaching cybersecurity, so I should know something about web app vulnerabilities, right?
+- Access code on the register.php page can be bruteforced. This would allow anyone to create users, even if they were not initially provided with the access code.
+  - If you're worried about this, using a very complex access code (which can be as long as you want by the way) will render this infeasible.
+  - If an attacker were able to arbitrarily create users, the only thing they could do is spawn environments, which other than wasting server resources (possible denial of service) doesn't pose a great threat.
+- Username enumeration for users with access code on register.php
+  - I believe the benefits of knowing you've chosen a bad username far outweight the costs of a malicious actor knowing a username is valid in this instance. It would be frustrating for users not to know why they're having trouble registering.
+  - The chances someone you trusted with an access code will want to enumerate usernames is slim.
+  - There's no way an attacker could leverage this information to do something malicious, at least with the current setup. Except maybe bruteforcing your password, but you should be using secure passwords in the first place.
+- Cross-Site Requesty Forgery (CSRF) could allow an attacker to send users a malicious link that would change their password, if they are logged into a PHP session.
+  - The possibility of this being exploited is extremely unlikely. An attacker would have to craft a malicious URL, disguise it in a way that looks legitimate, and fool a user into clicking it. The user would also have to be signed in to the session at the time, and sessions are capped at 2 hours.
+  - The effect of this being exploited is marginal. The attacker would be able to sign in as a user and create/revert/destroy a single instance of a contained environment. The user would probably complain that they cannot log in to the administrator, who would then end active PHP/Proxmox sessions and reset their password. I'll take this risk for the convenience of not having to retype my password every time I want to change it, thank you very much.
+- Existing session IDs are saved to a sessions file that is exposed to anyone with a web client.
+  - A session ID, in this context, refers to an ID assigned to a specific instance of a user environment that is running (not to be confused with a PHP session), which is primarily used to assign machine names or achieve unique IP addressing across multiple instances.
+  - A malicious actor would have to figure out how this file is encoded (probably by consulting the source code) and write a script to decode it. Session IDs also change as users create or destroy their environment.
+  - In most use cases, session IDs only tell you the possible IP addresses of a user's contained environment. Where's that going to get you? Nowhere, you don't have access to it anyway. Knowing what session IDs are in use doesn't tell you which one belongs to which user either.
+- Users with a valid access code may create unlimited Proxmox users on register.php
+  - There's a certain level of trust that goes into providing someone with an access code that they would not want to then deny access to your service. To be fair, I did mention bruteforcing the access code eariler, but also just use a complex access code or implement a web application firewall that throttles requests if you're that worried.
+  - Creating users takes up virtually no space in Proxmox. If someone wanted to do actual damage (denial of service), they'd have to start environments for each of those users, and a lot of them for it to actually be effective. This would be an extremely tedious task and probably not yield results in a reasonable timeframe.
+  - This is no different from creating multiple accounts on a site like TryHackMe or HackTheBox, except that they have more dedicated hardware for high availability.
