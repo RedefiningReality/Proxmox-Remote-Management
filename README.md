@@ -1,4 +1,4 @@
-# Proxmox Remote Management Scripts
+# Proxmox Remote Management
 Converts a set of Proxmox virtual machines to templates, which can then be dynamically provisioned for a set of users. The intended purpose of this project is for teaching cybersecurity hands-on, allowing an instructor to set up a cybersecurity practice environment that can be easily cloned to provide each student with access to their own copy.
 
 ### Setup
@@ -7,10 +7,10 @@ Converts a set of Proxmox virtual machines to templates, which can then be dynam
 pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management-Scripts.git`
-1. Enter the cloned directory: `cd Proxmox-Remote-Management-Scripts`
+1. Enter the cloned directory: `cd Proxmox-Remote-Management`
 1. Install required Python packages: `pip install -r requirements.txt`
-1. Run the [setup script](scripts/setup.py): `scripts/setup.py` or `python scripts/setup.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
-1. Modify [easyclone.sh](easyclone.sh) and [easypurge.sh](easypurge.sh) to your liking. See comments in each script.
+1. Run the [setup script](setup.py): `scripts/setup.py` or `python scripts/setup.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
+1. Modify [easyclone.sh](scripts/easyclone.sh) and [easypurge.sh](scripts/easypurge.sh) to your liking. See comments in each script.
 You can add these to your PATH so that they may be executed as commands with the following:
 ```
 ln -s easyclone.sh /usr/bin/easyclone
