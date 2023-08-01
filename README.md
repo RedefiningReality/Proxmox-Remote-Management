@@ -6,5 +6,5 @@ Manage users in bulk, create templates from virtual machines, clone environments
   - start/stop/revert one instance of an environment you provide
 - This all comes with setup scripts for **easy installation**, requiring *no manual installation other than cloning this repo*.
 
-If you're interested in the Python scripts, see the **[scripts guide](Scripts.md)**.
-If you're interested in the PHP website, see the **[web guide](Web.md)**.
+If you're interested in the **command line scripts**, see the **[scripts guide](Scripts.md)**.
+If you're interested in the **PHP website**, see the **[web guide](Web.md)**.
