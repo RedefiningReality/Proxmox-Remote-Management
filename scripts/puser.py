@@ -4,6 +4,7 @@ import argparse
 from proxmoxer import ProxmoxAPI, AuthenticationError
 from colors import printc, Color
 import random, string
+import subprocess
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
@@ -18,6 +19,11 @@ parser.add_argument('-f', '--users-file', type=str, help='path to file containin
 
 parser.add_argument('-p', '--password', type=str, help='password to assign to user')
 parser.add_argument('-g', '--groups', type=str, nargs='+', help='groups to add new Proxmox user(s) to (space-separated)')
+
+parser.add_argument('-c', '--purge-command', type=str, nargs='?', const='purge', help='destroy environments for removed users - specify purge script location if not in path')
+parser.add_argument('-b', '--remove-bridges', action='store_true', help='remove Linux bridges with USERNAME as their description')
+parser.add_argument('-bv', '--bridged-vms', type=str, help='check virtual machines with the specified IDs for bridge (requires -c)')
+parser.add_argument('-fw', '--firewall', action='store_true', help='remove interface and DHCP from pfSense firewall configuration (requires -c)')
 
 parser.add_argument('-pH', '--proxmox-host', type=str, default='PROXMOXHOST', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', help='Proxmox username for authentication')
@@ -98,14 +104,29 @@ def change_password(user, password):
         printc(f'User {userid} does not exist!', Color.YELLOW)
 
 def remove_user(user):
-    userid = user + '@pve'
-    print(f'Removing Proxmox VE user {userid}')
-    
-    if userid in userids:
-        pm.access.users(userid).delete()
-        print(f'Removed Proxmox VE user {userid}')
+    if args.purge_command:
+        command = args.purge_command.split(' ')
+        command.extend([user, '-u'])
+
+        if args.remove_bridges or args.bridged_vms is not None or args.firewall:
+            command.append('-b')
+        if args.bridged_vms is not None:
+            command.append('-bv')
+            command.append(args.bridged_vms)
+        if args.firewall:
+            command.append('-f')
+
+        print(command)
+        subprocess.run(command)
     else:
-        printc(f'User {userid} does not exist!', Color.YELLOW)
+        userid = user + '@pve'
+        print(f'Removing Proxmox VE user {userid}')
+    
+        if userid in userids:
+            pm.access.users(userid).delete()
+            print(f'Removed Proxmox VE user {userid}')
+        else:
+            printc(f'User {userid} does not exist!', Color.YELLOW)
 
 if args.action == 'create':
     print('Creating new Proxmox users')

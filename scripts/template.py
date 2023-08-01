@@ -45,18 +45,6 @@ parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', he
 
 args = parser.parse_args()
 
-# Print command line arguments (for debugging)
-'''
-print("IDs:", args.ids)
-print("Verbose:", args.verbose)
-print("Host:", args.host)
-print("User:", args.user)
-print("Token Name:", args.token_name)
-print("Token Value:", args.token_value)
-print("Verify SSL:", args.verify_ssl)
-print("Node:", args.proxmox_node)
-'''
-
 # Connect to Proxmox server
 pm = ProxmoxAPI(args.proxmox_host, user=args.proxmox_user, token_name=args.proxmox_token_name, token_value=args.proxmox_token_value, verify_ssl=args.verify_ssl)
 

@@ -33,7 +33,7 @@ def valid_ids(ids):
 		if vmid in vmids:
 			valid.append(vmid)
 		else:
-			print(f'\033[33mNo virtual machine or template found with ID {vmid}\033[0m')
+			printc(f'No virtual machine or template found with ID {vmid}', Color.YELLOW)
 	return valid
 
 # Check virtual machine status every 5 seconds until it has stopped running
@@ -57,7 +57,7 @@ parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', he
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
 parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to purge')
 
 parser.add_argument('-fH', '--firewall-host', type=str, default='FIREWALLHOST', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
 parser.add_argument('-fP', '--firewall-port', type=int, default=FIREWALLPORT, help='SSH port for the pfSense firewall (default is 22)')
@@ -67,20 +67,6 @@ parser.add_argument('-ft', '--firewall-timeout', type=float, default=FIREWALLTIM
 parser.add_argument('-fc', '--firewall-config', type=str, default='FIREWALLCONFIG', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
 args = parser.parse_args()
-
-# Print command line arguments (for debugging)
-'''
-print("Clone Name:", args.clone_name)
-print("Remove Bridges:", args.remove_bridges)
-print("Bridged VMs:", args.bridged_vms)
-print("Verbose:", args.verbose)
-print("Host:", args.host)
-print("User:", args.user)
-print("Token Name:", args.token_name)
-print("Token Value:", args.token_value)
-print("Verify SSL:", args.verify_ssl)
-print("Node:", args.proxmox_node)
-'''
 
 # Connect to Proxmox server
 pm = ProxmoxAPI(args.proxmox_host, user=args.proxmox_user, token_name=args.proxmox_token_name, token_value=args.proxmox_token_value, verify_ssl=args.verify_ssl)
@@ -92,8 +78,15 @@ if args.user:
 		userid = args.user + '@pve'
 
 	print(f'Removing Proxmox VE user {userid}')
-	pm.access.users(userid).delete()
-	printc(f'Removed Proxmox VE user {userid}!\n', Color.GREEN)
+
+	users = pm.access.users.get()
+	userids = [user['userid'] for user in users]
+
+	if userid in userids:
+		pm.access.users(userid).delete()
+		printc(f'Removed Proxmox VE user {userid}!\n', Color.GREEN)
+	else:
+		printc(f'User {userid} does not exist!\n', Color.YELLOW)
 
 # Get IDs of virtual machines in Proxmox whose name starts with args.clone_name
 print('Checking for virtual machines to remove')
@@ -117,7 +110,7 @@ for vmid in clone_ids:
 	status = pm.nodes(args.proxmox_node).qemu(vmid).status.current.get()['status']
 
 	if status == 'stopped':
-		print('Virtual machine is already powered off')
+		print(f'Virtual machine with ID {vmid} is already powered off')
 	else:
 		print(f'Stopping virtual machine with ID {vmid}')
 		pm.nodes(args.proxmox_node).qemu(vmid).status.stop.post()
@@ -179,7 +172,7 @@ if args.remove_bridges:
 	printc('Removed all network devices associated with removed bridges!\n', Color.GREEN)
 
 if args.firewall:
-	import paramiko
+	import paramiko, os, tempfile
 	from scp import SCPClient, SCPException
 	import xml.etree.ElementTree as ET
 
@@ -195,10 +188,12 @@ if args.firewall:
 		success = False
 
 	if success:
+		temp = tempfile.NamedTemporaryFile(delete=False)
+
 		print('Retrieving configuration file from pfSense')
 		scp = SCPClient(ssh.get_transport())
 		try:
-			scp.get(args.firewall_config, local_path='config.xml')
+			scp.get(args.firewall_config, local_path=temp.name)
 		except SCPException:
 			print('Unable to retrieve configuration file from pfSense! Ensure you specified the correct path')
 			scp.close()
@@ -206,7 +201,7 @@ if args.firewall:
 			
 	if success:
 		print('Reading retrieved configuration file')
-		tree = ET.parse('config.xml')
+		tree = ET.parse(temp.name)
 		root = tree.getroot()
 
 		print('Writing configuration changes to new configuration file')
@@ -230,14 +225,17 @@ if args.firewall:
 				firewall.remove(element)
 		firewall[len(firewall)-1].tail = '\n\t'
 
-		tree.write('config.xml', xml_declaration=True, method='xml', short_empty_elements=False)
+		tree.write(temp.name, xml_declaration=True, method='xml', short_empty_elements=False)
 
 		print('Uploading new configuration file to pfSense')
 		try:
-			scp.put('config.xml', args.firewall_config)
+			scp.put(temp.name, args.firewall_config)
 		except SCPException:
 			print('Unable to upload configuration file to pfSense!')
 		scp.close()
+
+		temp.close()
+		os.unlink(temp.name)
 	
 	if success:
 		print('Reloading pfSense interfaces, firewall rules, and DHCP')

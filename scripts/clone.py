@@ -42,11 +42,11 @@ def valid_ids(ids, accept=[]):
 			printc(f'No virtual machine or template found with ID {vmid}', Color.YELLOW)
 	return valid
 
-# Check virtual machine status every 5 seconds until it has finished cloning
-def check_cloned(vmid):
+# Check virtual machine status every 5 seconds until it is unlocked
+def check_locked(vmid,msg):
 	while 'lock' in pm.nodes(args.proxmox_node).qemu(vmid).config.get():
 		time.sleep(5)
-	print(f'Virtual machine template {vmid} has finished cloning')
+	print(msg)
 
 # Parse command line arguments
 parser = argparse.ArgumentParser('clone Proxmox virtual machine templates')
@@ -55,6 +55,7 @@ parser.add_argument('ids', type=num_list, help='IDs of virtual machines to clone
 parser.add_argument('-c', '--clone-name', type=str, help='name prepended to virtual machine clones')
 parser.add_argument('-i', '--clone-begin-id', type=int, default=600, help='clones will be assigned the first available ID after this number (ex. 500 or 600)')
 parser.add_argument('-t', '--clone-type', choices=['linked','full'], default='linked', help='the type of clone to create (default is linked)')
+parser.add_argument('-ss', '--snapshot', type=str, help='create a snapshot for each cloned virtual machine named SNAPSHOT')
 parser.add_argument('-s', '--start-clone', action='store_true', help='start cloned virtual machines automatically both on boot and after cloning')
 
 parser.add_argument('-u', '--user', type=str, nargs='?', const='[CLONE_NAME]', help='create a new Proxmox VE user for managing the cloned virtual machines - if not specified, this will default to the clone name')
@@ -83,7 +84,7 @@ parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', he
 parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
 parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to template')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to clone')
 
 parser.add_argument('-fH', '--firewall-host', type=str, default='FIREWALLHOST', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
 parser.add_argument('-fP', '--firewall-port', type=int, default=FIREWALLPORT, help='SSH port for the pfSense firewall (default is 22)')
@@ -103,32 +104,6 @@ if args.user:
 			exit('Must specify username for new Proxmox VE user with either -u or -c')
 	else:
 		userid = args.user + '@pve'
-
-# Print command line arguments (for debugging)
-'''
-print("IDs:", args.ids)
-print("Clone Name:", args.clone_name)
-print("Clone Begin ID:", args.clone_begin_id)
-print("Clone Type:", args.clone_type)
-print("Start Clone:", args.start_clone)
-print("Create Bridge:", args.create_bridge)
-print("Bridge Subnet:", args.bridge_subnet)
-print("DHCP Begin:", args.dhcp_begin)
-print("DHCP End:", args.dhcp_end)
-print("Add Bridged VMs:", args.add_bridged_vms)
-print("Firewall Host:", args.firewall_host)
-print("Firewall Port:", args.firewall_port)
-print("Firewall Username:", args.firewall_username)
-print("Firewall Password:", args.firewall_password)
-print("Verbose:", args.verbose)
-
-print("Host:", args.host)
-print("User:", args.user)
-print("Token Name:", args.token_name)
-print("Token Value:", args.token_value)
-print("Verify SSL:", args.verify_ssl)
-print("Node:", args.proxmox_node)
-'''
 
 # Connect to Proxmox server
 pm = ProxmoxAPI(args.proxmox_host, user=args.proxmox_user, token_name=args.proxmox_token_name, token_value=args.proxmox_token_value, verify_ssl=args.verify_ssl)
@@ -223,7 +198,7 @@ for i, vmid in enumerate(ids):
 		static[newid] = static[vmid]
 		del static[vmid]
 	
-	thread = Thread(target=check_cloned, args=(newid,))
+	thread = Thread(target=check_locked, args=(newid,f'Virtual machine with ID {newid} has finished cloning'))
 	thread.start()
 	threads.append(thread)
 
@@ -231,6 +206,22 @@ for i, vmid in enumerate(ids):
 for thread in threads:
 	thread.join()
 printc('All virtual machine templates cloned successfully!\n', Color.GREEN)
+
+if args.snapshot is not None:
+	threads = []
+
+	for vmid in clone_ids:
+		print(f'Creating snapshot {args.snapshot} for virtual machine with ID {vmid}')
+		pm.nodes(args.proxmox_node).qemu(vmid).snapshot.post(snapname=args.snapshot)
+
+		thread = Thread(target=check_locked, args=(vmid,f'Snapshot created for virtual machine with ID {vmid}'))
+		thread.start()
+		threads.append(thread)
+
+	# Wait for all threads to complete (all snapshots created) to continue
+	for thread in threads:
+		thread.join()
+	printc('Snapshots created for all cloned virtual machines!\n', Color.GREEN)
 
 if args.create_bridge:
 	#bridged += clone_ids
@@ -281,12 +272,12 @@ if args.create_bridge:
 	printc('Linux bridge added to all desired virtual machines!\n', Color.GREEN)
 
 	if args.firewall:
-		import paramiko
+		import paramiko, os, tempfile
 		from scp import SCPClient, SCPException
 		import xml.etree.ElementTree as ET
 
 		def subelement(elt, tag, text='', tail='\n\t\t\t'):
-			""" Create and return new XML configuration element  """
+			""" Create and return new XML configuration element """
 			new = ET.SubElement(elt, tag)
 			# Attempt to preserve some of the formatting of pfSense's config.xml
 			new.text = text
@@ -312,10 +303,12 @@ if args.create_bridge:
 			interface = lines[len(lines)-1][:-1]
 			print(f'Found newly created interface {interface}')
 
+			temp = tempfile.NamedTemporaryFile(delete=False)
+
 			print('Retrieving configuration file from pfSense')
 			scp = SCPClient(ssh.get_transport())
 			try:
-				scp.get(args.firewall_config, local_path='config.xml')
+				scp.get(args.firewall_config, local_path=temp.name)
 			except SCPException:
 				print('Unable to retrieve configuration file from pfSense! Ensure you specified the correct path')
 				scp.close()
@@ -323,7 +316,7 @@ if args.create_bridge:
 			
 		if success:
 			print('Reading retrieved configuration file')
-			tree = ET.parse('config.xml')
+			tree = ET.parse(temp.name)
 			root = tree.getroot()
 
 			print('Writing configuration changes to new configuration file')
@@ -428,14 +421,17 @@ if args.create_bridge:
 			subelement(source, 'network', text=new_name)
 			subelement(destination, 'any')
 
-			tree.write('config.xml', xml_declaration=True, method='xml', short_empty_elements=False)
+			tree.write(temp.name, xml_declaration=True, method='xml', short_empty_elements=False)
 
 			print('Uploading new configuration file to pfSense')
 			try:
-				scp.put('config.xml', args.firewall_config)
+				scp.put(temp.name, args.firewall_config)
 			except SCPException:
 				print('Unable to upload configuration file to pfSense!')
 			scp.close()
+
+			temp.close()
+			os.unlink(temp.name)
 
 		if success:
 			print('Reloading pfSense interfaces, firewall rules, and DHCP')
@@ -514,7 +510,7 @@ if args.user:
 	print('Assigning permissions to user')
 	for vmid in clone_ids:
 		print(f'Granting access to virtual machine with ID {vmid}')
-		params.clear()
+		params = {}
 
 		params['path'] = '/vms/' + str(vmid)
 		params['users'] = userid
