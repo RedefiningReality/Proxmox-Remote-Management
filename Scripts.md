@@ -25,9 +25,12 @@ Additional notes about the setup script:
 ### Commands
 - [template](scripts/template.py) ⇒ convert Proxmox virtual machines into clonable templates
 - [clone](scripts/clone.py) ⇒ clone Proxmox virtual machine templates, adding corresponding Linux bridge and Proxmox user for access
+- [revert](scripts/revert.py) ⇒ revert (rollback) Proxmox virtual machines to their first available snapshot or a given snapshot (by name)
+  - can revert based on virtual machine ID or name
 - [purge](scripts/purge.py) ⇒ remove Proxmox virtual machines and corresponding Linux bridge, performing cleanup
 - [puser](scripts/puser.py) ⇒ create, destroy, and change passwords for Proxmox users
   - for more information, consult the [puser guide](Proxmox%20User%20(PUser)%20Script%20Guide.md)
+- [colors.py](scripts/colors.py) ⇒ dependency that allows other scripts to print coloured output on Unix-based Operating Systems
 - [easyclone](scripts/easyclone.sh) ⇒ template bash script that runs [clone](scripts/clone.py) with a set of predefined arguments
 - [easypurge](scripts/easypurge.sh) ⇒ template bash script that runs [purge](scripts/purge.py) with a set of predefined arguments
 
@@ -49,6 +52,10 @@ The help screens for each command are sufficiently detailed to warrant not writi
 
 ```
 #### [Clone](scripts/clone.py)
+```
+
+```
+#### [Revert](scripts/revert.py)
 ```
 
 ```
