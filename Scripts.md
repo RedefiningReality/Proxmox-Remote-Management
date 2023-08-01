@@ -1,4 +1,7 @@
-# Proxmox Remote Management Scripts
+# Proxmox and pfSense Remote Management Scripts
+
+Scripts for managing users in bulk, creating templates from virtual machines, cloning environments for a set of users, reverting virtual machines, and destroying cloned environments. This serves as the backend for the web interface, which may be found [here](Web.md).
+
 ### Setup
 **Note:** Requires Python 3
 
