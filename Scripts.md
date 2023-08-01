@@ -7,9 +7,9 @@ Scripts for managing users in bulk, creating templates from virtual machines, cl
 
 pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
-1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management-Scripts.git`
+1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
-1. Run the [setup script](setup-scripts.py): `setup-scripts.py` or `python setup-scripts.py`. It will walk you through the process, test your current Proxmox installation, and modify the other scripts accordingly.
+1. Run the [setup script](setup-scripts.py): `setup-scripts.py` or `python setup-scripts.py`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the other scripts accordingly.
 1. Modify [easyclone.sh](scripts/easyclone.sh) and [easypurge.sh](scripts/easypurge.sh) to your liking. See comments in each script.
 You can add these to your PATH so that they may be executed as commands with the following:
 ```
