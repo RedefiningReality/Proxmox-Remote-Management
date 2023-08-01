@@ -10,7 +10,7 @@ pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
-1. Run the [setup script](setup-web.py): `setup-web.py` or `python setup-web.py`. It will walk you through the process, test your current Proxmox and pfSense installation, modify the Python scripts accordingly, and prepare the web files to be served using Apache2 and PHP.
+1. Run the [setup script](setup-web.py): `sudo setup-web.py` or `sudo python setup-web.py`. It will walk you through the process, test your current Proxmox and pfSense installation, modify the Python scripts accordingly, and prepare the web files to be served using Apache2 and PHP.
 1. Modify [config.ini](web/config.ini) to reflect your desired configuration. This will let you determine how users authenticate, what the cloning process looks like, and where to log output, among other things.
 1. (Optional) You may test out your configuration by navigating to test.php in a web browser (https://localhost/test.php)
    - The commands to be issued for creating, reverting, and destroying environments will be shown at the top.
