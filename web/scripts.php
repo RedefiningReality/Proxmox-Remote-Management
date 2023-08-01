@@ -99,6 +99,7 @@ function proxmox_clone($user) {
         'clone_begin_id' => '-i',
         'clone_type' => '-t',
         'snapshot_name' => '-ss',
+        'roles' => '-r',
         'bridge_subnet' => '-bs',
         'bridge_ports' => '-bp',
         'bridged_vms' => '-bv',
