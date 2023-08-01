@@ -55,7 +55,8 @@ Additional notes about the setup script:
 I created this platform to facilitate teaching cybersecurity, so I should know something about web app vulnerabilities, right?
 - Access code on the register.php page can be bruteforced. This would allow anyone to create users, even if they were not initially provided with the access code.
   - If you're worried about this, using a very complex access code (which can be as long as you want by the way) will render this infeasible.
-  - If an attacker were able to arbitrarily create users, the only thing they could do is spawn environments, which other than wasting server resources (possible denial of service) doesn't pose a great threat.
+  - If an attacker were able to arbitrarily create users, the only thing they could do is spawn environments, which other than wasting server resources (possible denial of service), doesn't pose a great threat.
+  - The puser script allows you to delete created users and their associated environments in a matter of seconds, especially if you're saving credentials to a file, which is set by default.
 - Username enumeration for users with access code on register.php
   - I believe the benefits of knowing you've chosen a bad username far outweight the costs of a malicious actor knowing a username is valid in this instance. It would be frustrating for users not to know why they're having trouble registering.
   - The chances someone you trusted with an access code will want to enumerate usernames is slim.
