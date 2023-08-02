@@ -114,6 +114,7 @@ args = parser.parse_args()
 
 if platform.system() == 'Linux' and os.getuid() != 0:
     print(f'Please run this script as root: sudo {sys.argv[0]}')
+    exit()
 
 if args.script_dependencies is None:
     print(f'The following Python script dependencies are required: '+', '.join(python_dependencies))
@@ -398,7 +399,7 @@ if platform.system() == 'Linux':
         printc('Created website configuration file config.ini!\n', Color.GREEN)
         
         print('Removing existing pages in web directory')
-        run_command('rm -rf /var/www/html/*')
+        run_command('rm -rf /var/www/html')
         print('Removed all existing pages')
         
         print('Updating php scripts and moving them to default web directory')
