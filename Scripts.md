@@ -23,9 +23,9 @@ Additional notes on the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
 - If you'd like to perform a fully unattended installation (no prompts), be sure to:
-  - use `-f [True/False]` to specify whether you're using a pfSense firewall
-  - use `-s [True/False]` to specify whether you'd like to automatically install Python dependencies respectively
-  - use `-p [True/False]` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
+  - use `--firewall/--no-firewall` to specify whether you're using a pfSense firewall
+  - use `--script-dependencies/--no-script-dependencies` to specify whether you'd like to automatically install Python dependencies
+  - use `--add-to-path/--no-add-to-path` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
   - specify all other options! Any options you don't specify you'll be prompted to provide.
 
 ### Commands
