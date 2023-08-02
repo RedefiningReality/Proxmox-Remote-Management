@@ -63,9 +63,10 @@ def move(source, destination):
 
     if not os.path.exists(destination):
         os.makedirs(destination)
-
+    
+    new = os.path.join(destination, os.path.basename(source))
     try:
-        result = shutil.move(source, destination)
+        result = shutil.move(source, new)
         print(f'Moved file {source} to directory {destination}')
         return result
     except Exception as e:
