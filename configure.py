@@ -2,11 +2,14 @@ import argparse
 import platform
 import socket
 import os, sys, shutil, subprocess
+import pwd
 
 sys.path.append('scripts')
 from colors import printc, Color
 
 service = 'apache2'
+web_users = ['www-data', 'apache', 'apache2', 'httpd']
+sessions = '/var/www/html/sessions'
 
 web_dir = 'web/'
 web = ['index.php', 'login.php', 'logout.php', 'password.php', 'register.php', 'scripts.php', 'test.php', 'creds.php']
@@ -56,12 +59,30 @@ def run_command(command):
 # Parse command line arguments
 parser = argparse.ArgumentParser('configure apache2 web server to securely serve web files')
 
+parser.add_argument('-u', '--web-user', type=str, help='user that will be running apache2 (detected automatically if not specified)')
 parser.add_argument('-d', '--domain-name', type=str, help='domain name or IP address for website - used to redirect HTTP requests on port 80 to HTTPS on port 443')
 parser.add_argument('-tc', '--tls-crt', type=str, help='path to TLS crt file for SSL/TLS on webpages')
 parser.add_argument('-tk', '--tls-key', type=str, help='path to TLS key file for SSL/TLS on webpages')
 parser.add_argument('-c', '--config-path', type=str, help='desired directory to place web configuration file (config.ini)')
 
 args = parser.parse_args()
+
+if args.web_user:
+    web_user = pwd.getpwnam(args.web_user)
+    uid = web_user.pw_uid
+    gid = web_user.pw_gid
+else:
+    print('Automatically detecting web user')
+    for p in pwd.getpwall():
+        if p.pw_name in web_users:
+            uid = p.pw_uid
+            gid = p.pw_gid
+            printc(f'Found web user {p.pw_name}!\n', Color.GREEN)
+            break
+    else:
+        printc('Web user not found!', Color.RED)
+        print('Are you sure you installed apache2 correctly?')
+        print('If so, please rerun and specify web user with -u [user]')
 
 if args.domain_name is None:
     args.domain_name = input('Enter domain name or IP address used to visit website: ')
@@ -112,6 +133,12 @@ print('Updating php scripts and moving them to default web directory')
 for file in web:
     replace(web_dir+file, {'config.ini': config})
     move(web_dir+file, '/var/www/html')
+    
+print('Creating sessions file')
+with open(sessions, 'w') as fp:
+    pass
+print('Setting ownership of sessions file')
+os.chown(sessions, uid, gid)
 printc('Web directory is now hosting all site files!\n', Color.GREEN)
 
 print('Setting apache2 web service to start on boot')
@@ -119,4 +146,4 @@ run_command(f'systemctl enable {service}')
 printc('Web service prepared and will start on boot\n', Color.GREEN)
 
 printc(f'To manage site preferences, update your configuration in {config}', Color.YELLOW)
-printc(f'Then run the following to start your webserver: systemctl start {service}', Color.YELLOW)
+printc(f'Then reboot or run the following to start your webserver: systemctl start {service}', Color.YELLOW)
