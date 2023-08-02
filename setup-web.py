@@ -147,10 +147,10 @@ if not args.bypass_checks:
     test(host, port)
 
 if args.proxmox_user is None:
-    args.proxmox_user = input('Enter Proxmox username for authentication (eg. proxmoxer@pve): ')
+    args.proxmox_user = input('Enter Proxmox username for authentication (eg. root@pam): ')
     while '@' not in args.proxmox_user:
         print('No realm (@pam, @pve, etc) specificed!')
-        args.proxmox_user = input('Enter Proxmox username for authentication (eg. proxmoxer@pve): ')
+        args.proxmox_user = input('Enter Proxmox username for authentication (eg. root@pam): ')
 
 if args.proxmox_token_name is None:
     args.proxmox_token_name = input(f'Enter name of Proxmox authentication token for user {args.proxmox_user} (default {args.proxmox_user[:-4]}): ')
@@ -171,10 +171,10 @@ if not args.bypass_checks:
         nodes = pm.nodes.get()
         printc('Authentication successful!\n', Color.GREEN)
     except ResourceException:
-        printc('Unable to authenticate to Proxmox!\n', Color.RED)
+        printc('Unable to authenticate to Proxmox!', Color.RED)
         exit()
     except Exception:
-        printc(f'{args.proxmox_host} does not appear to be a valid Proxmox instance!\n', Color.RED)
+        printc(f'{args.proxmox_host} does not appear to be a valid Proxmox instance!', Color.RED)
         exit()
 
     node_names = [node['node'] for node in nodes]
@@ -231,10 +231,10 @@ if args.configure_firewall:
             ssh.connect(args.firewall_host, args.firewall_port, args.firewall_user, args.firewall_password, timeout=args.firewall_timeout)
             printc('Authentication successful!\n', Color.GREEN)
         except paramiko.AuthenticationException:
-            printc('Unable to authenticate to pfSense!\n', Color.RED)
+            printc('Unable to authenticate to pfSense!', Color.RED)
             exit()
         except (paramiko.SSHException, Exception):
-            printc(f'{args.firewall_host} does not appear to be running SSH on port {args.firewall_port}!\n', Color.RED)
+            printc(f'{args.firewall_host} does not appear to be running SSH on port {args.firewall_port}!', Color.RED)
             exit()
 
     if args.firewall_config is None:
@@ -282,8 +282,8 @@ params = {
 
 print('Updating script files to reflect provided information')
 for script in scripts:
-    replace(script, params)
-replace(config, params)
+    replace(script_dir+script, params)
+replace(web_dir+config, params)
 printc('All script files updated accordingly!\n', Color.GREEN)
 
 if platform.system() == 'Linux':
