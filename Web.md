@@ -51,7 +51,7 @@ Additional notes about the setup script:
   - credentials file can be set using the **creds_file** option in config.ini
   - this will render as a blank page and do nothing if accessed from a web browser
 
-### Known Vulnerabilities and Why I Don't Give a D*mn
+### Known Vulnerabilities and Why I Don't Care
 I created this platform to facilitate teaching cybersecurity, so I should know something about web app vulnerabilities, right?
 - Access code on the register.php page can be bruteforced. This would allow anyone to create users, even if they were not initially provided with the access code.
   - If you're worried about this, using a very complex access code (which can be as long as you want by the way) will render this infeasible.
