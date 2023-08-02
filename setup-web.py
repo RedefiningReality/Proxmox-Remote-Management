@@ -11,16 +11,14 @@ warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 sys.path.append('scripts')
 from colors import printc, Color
 
+python_dependencies = ['proxmoxer', 'requests', 'paramiko', 'scp']
+
 scripts_dir = 'scripts/'
 scripts = ['template.py', 'revert.py', 'clone.py', 'purge.py', 'puser.py']
 
 web_dir = 'web/'
 web = ['index.php', 'login.php', 'logout.php', 'password.php', 'register.php', 'scripts.php', 'test.php', 'creds.php']
-
-tls = ['tls.crt', 'tls.key']
-apache_config = 'default.conf'
 config = 'config.ini'
-python_dependencies = ['proxmoxer', 'requests', 'paramiko', 'scp']
 
 def is_int(num):
     try:
@@ -85,15 +83,11 @@ def run_command(command):
         exit
 
 # Parse command line arguments
-parser = argparse.ArgumentParser('setup Proxmox automated environment scripts')
+parser = argparse.ArgumentParser('setup Proxmox remote management scripts')
 
 parser.add_argument('-b', '--bypass-checks', action='store_true', help='bypass all checks to ensure correct values were entered (useful if you haven\'t finished setting up Proxmox)')
 parser.add_argument('-sd', '--script-dependencies', type=bool, help='True/False - install script dependencies using the pip package manager')
-parser.add_argument('-wd', '--web-dependencies', type=bool, help='True/False - install web dependencies and automatically configure web server')
-parser.add_argument('-d', '--domain-name', type=str, help='domain name or IP address for website - used to redirect HTTP requests on port 80 to HTTPS on port 443')
-parser.add_argument('-tc', '--tls-crt', type=str, help='path to TLS crt file for SSL/TLS on webpages')
-parser.add_argument('-tk', '--tls-key', type=str, help='path to TLS key file for SSL/TLS on webpages')
-parser.add_argument('-c', '--config-path', type=str, help='desired directory to place web configuration file (config.ini)')
+parser.add_argument('-wd', '--web-dependencies', type=bool, help='True/False - install web dependencies using the apt,apt-get, or yum package manager')
 parser.add_argument('-p', '--add-to-path', type=bool, help='True/False - whether or not to add scripts to PATH')
 
 parser.add_argument('-pH', '--proxmox-host', type=str, help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.122:443)')
@@ -345,6 +339,7 @@ if platform.system() == 'Linux':
 
         if command == '':
             printc('No suitable package manager found! Please install apache2 and php manually', Color.YELLOW)
+            printc('Then you may use configure.py to complete your installation', Color.YELLOW)
             exit
 
         manager = command.split(' ')[0]
@@ -356,61 +351,9 @@ if platform.system() == 'Linux':
         print('Installing packages')
         run_command(command)
         printc('Installed apache2 and php successfully!\n', Color.GREEN)
-
-        if args.domain_name is None:
-            args.domain_name = input('Enter domain name or IP address used to visit website: ')
-
-        printc('It is highly recommended that you create a custom TLS certificate for serving the website securely', Color.YELLOW)
-        print('This can be self-signed with openssl or a free signed certificate from LetsEncrypt')
-        print('Using defaults (pressing enter) for the following 2 options will use the self-signed cert packaged in this repo')
-        print('Note that this cert will present a warning message in browsers since it\'s self-signed, and it may be expired')
-
-        if args.tls_crt is None:
-            args.tls_crt = input('Enter path to .crt file for TLS certificate (or leave blank): ')
-
-        if args.tls_crt == '':
-            args.tls_crt = web_dir+tls[0]
-
-        if args.tls_key is None:
-            args.tls_key = input('Enter path to .key file for TLS certificate (or leave blank): ')
-
-        if args.tls_key == '':
-            args.tls_key = web_dir+tls[1]
-
-        params = {
-            'DOMAIN': args.domain_name,
-            'TLSCRT': move(args.tls_crt, '/etc/ssl/certs'),
-            'TLSKEY': move(args.tls_key, '/etc/ssl/private')
-        }
-        replace(web_dir+apache_config, params)
-        move(web_dir+apache_config, f'/etc/{service}/sites-available')
-
-        run_command('a2enmod ssl')
-        run_command('a2ensite default.conf')
-        printc('Apache configuration created and enabled!\n', Color.GREEN)
-
-        if args.config_path is None:
-            args.config_path = input('Enter desired destination directory for web configuration file config.ini (default is current directory): ')
-
-        if args.config_path == '':
-            args.config_path = os.getcwd()
-
-        config = move(web_dir+config, args.config_path)
-        printc('Created website configuration file config.ini!\n', Color.GREEN)
         
-        print('Removing existing pages in web directory')
-        run_command('rm -rf /var/www/html')
-        print('Removed all existing pages')
-        
-        print('Updating php scripts and moving them to default web directory')
-        for file in web:
-            replace(web_dir+file, {'config.ini': config})
-            move(web_dir+file, '/var/www/html')
-        printc('Web directory is now hosting all site files!\n', Color.GREEN)
-
-        print('Setting apache2 web service to start on boot')
-        run_command(f'systemctl enable {service}')
-        printc('Web service prepared and will start on boot\n', Color.GREEN)
-        
-        printc(f'To manage site preferences, update your configuration in {config}', Color.YELLOW)
-        printc(f'Then run the following to start your webserver: systemctl start {service}', Color.YELLOW)
+        printc('You may now run configure.py to configure the apache2 web server accordingly', Color.YELLOW)
+    else:
+        printc('If you only wish to use the Python scripts, your installation is now complete', Color.YELLOW)
+        printc('If you wish to use the web interface as well, please install apache2 and php', Color.YELLOW)
+        printc('Then you may use configure.py to complete your installation', Color.YELLOW)
