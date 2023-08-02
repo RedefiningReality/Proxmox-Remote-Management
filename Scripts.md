@@ -44,28 +44,4 @@ Additional notes about the setup script:
 `purge doge -u -b -bv 400,402 -f`
 
 ### Usage information
-The help screens for each command are sufficiently detailed to warrant not writing other documentation. However, `puser` has [its own page](Proxmox%20User%20(PUser)%20Script%20Guide.md) that's worth checking out.
-#### [Setup](setup-scripts.py)
-```
-
-```
-#### [Template](scripts/template.py)
-```
-
-```
-#### [Clone](scripts/clone.py)
-```
-
-```
-#### [Revert](scripts/revert.py)
-```
-
-```
-#### [Purge](scripts/purge.py)
-```
-
-```
-#### [PUser](scripts/puser.py)
-```
-
-```
+The help screens for each command are sufficiently detailed to warrant not writing other documentation. Run any command with `-h`: eg. `clone -h`. However, `puser` has [its own page](Proxmox%20User%20(PUser)%20Script%20Guide.md) that's worth checking out.
