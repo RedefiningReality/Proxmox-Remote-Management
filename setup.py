@@ -338,7 +338,7 @@ if platform.system() == 'Linux':
             service = 'httpd'
 
         if command == '':
-            printc('No suitable package manager found! Please install apache2 and php manually', Color.YELLOW)
+            printc('No suitable package manager found! Please install apache2, php, and php-curl manually', Color.YELLOW)
             printc('Then you may use configure.py to complete your installation', Color.YELLOW)
             exit
 
@@ -353,5 +353,5 @@ if platform.system() == 'Linux':
         printc('You may now run configure.py to configure the apache2 web server accordingly', Color.YELLOW)
     else:
         printc('If you only wish to use the Python scripts, your installation is now complete', Color.YELLOW)
-        printc('If you wish to use the web interface as well, please install apache2 and php', Color.YELLOW)
+        printc('If you wish to use the web interface as well, please install apache2, php, and php-curl', Color.YELLOW)
         printc('Then you may use configure.py to complete your installation', Color.YELLOW)
