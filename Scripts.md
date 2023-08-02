@@ -3,7 +3,7 @@
 Scripts for managing users in bulk, creating templates from virtual machines, cloning environments for a set of users, reverting virtual machines, and destroying cloned environments. This serves as the backend for the web interface, which may be found [here](Web.md).
 
 ### Setup
-**Note:** Requires Python 3. These instructions are for installing ONLY the Python scripts. To install these scripts along with the web interface, consult the setup instructions [here](Web.md).
+**Note:** Requires Python 3.9. These instructions are for installing ONLY the Python scripts. To install these scripts along with the web interface, consult the setup instructions [here](Web.md).
 
 pip installation to be created in the near future
 1. Create a new API key on Proxmox to be used by these scripts for remote access
