@@ -411,5 +411,5 @@ if platform.system() == 'Linux':
         run_command(f'systemctl enable {service}')
         printc('Web service prepared and will start on boot\n', Color.GREEN)
         
-        print(f'To manage site preferences, update your configuration in {args.config_path}')
-        print(f'Then run the following to start your webserver: systemctl start {service}')
+        printc(f'To manage site preferences, update your configuration in {config}', Color.YELLOW)
+        printc(f'Then run the following to start your webserver: systemctl start {service}', Color.YELLOW)
