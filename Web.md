@@ -26,7 +26,7 @@ ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
 ```
 
-Additional notes about the setup script:
+Additional notes on the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
 - If you'd like to perform a fully unattended installation (no prompts), be sure to:
