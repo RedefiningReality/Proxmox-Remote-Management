@@ -76,7 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($student['creds_file'])) {
                 update_password($username, $new_password, $student['creds_file']);
             }
-
+            
+            $_SESSION["changepwd"] = false;
             header("location: index.php");
             exit;
         } else {
