@@ -79,19 +79,19 @@ parser.add_argument('-dd', '--dhcp-dns', type=str, nargs='+', help='DNS servers 
 parser.add_argument('-ds', '--dhcp-static', type=static_ip, nargs='+', help='DHCP static lease for bridged VM with specified ID or clone created from template with specified ID - format is <ID>,<IP> (ex. 500,10.0.2.2 402,10.0.2.3)')
 parser.add_argument('-v', '--verbose', action='count', default=0, help='increase the verbosity level')
 
-parser.add_argument('-pH', '--proxmox-host', type=str, default='PROXMOXHOST', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
-parser.add_argument('-pu', '--proxmox-user', type=str, default='PROXMOXUSER', help='Proxmox username for authentication')
-parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='PROXMOXTNAME', help='name of Proxmox authentication token for user')
-parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='PROXMOXTVAL', help='value of Proxmox authentication token')
+parser.add_argument('-pH', '--proxmox-host', type=str, default='216.47.144.122:443', help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.123:443)')
+parser.add_argument('-pu', '--proxmox-user', type=str, default='proxmoxer@pve', help='Proxmox username for authentication')
+parser.add_argument('-ptn', '--proxmox-token-name', type=str, default='proxmoxer', help='name of Proxmox authentication token for user')
+parser.add_argument('-ptv', '--proxmox-token-value', type=str, default='561b209a-33f0-4b69-843b-c5a9cf95cf67', help='value of Proxmox authentication token')
 parser.add_argument('-ssl', '--verify-ssl', action='store_true', help='verify SSL certificate on Proxmox host')
-parser.add_argument('-pn', '--proxmox-node', type=str, default='PROXMOXNODE', help='node containing virtual machines to clone')
+parser.add_argument('-pn', '--proxmox-node', type=str, default='ece2223', help='node containing virtual machines to clone')
 
-parser.add_argument('-fH', '--firewall-host', type=str, default='FIREWALLHOST', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
-parser.add_argument('-fP', '--firewall-port', type=int, default=FIREWALLPORT, help='SSH port for the pfSense firewall (default is 22)')
-parser.add_argument('-fu', '--firewall-user', type=str, default='FIREWALLUSER', help='username for the pfSense firewall (requires -f)')
-parser.add_argument('-fp', '--firewall-password', type=str, default='FIREWALLPASS', help='password for the pfSense firewall (requires -f)')
-parser.add_argument('-ft', '--firewall-timeout', type=float, default=FIREWALLTIMEOUT, help='time in seconds before connection to pfSense times out (default is 5)')
-parser.add_argument('-fc', '--firewall-config', type=str, default='FIREWALLCONFIG', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
+parser.add_argument('-fH', '--firewall-host', type=str, default='216.47.158.239', help='hostname of pfSense firewall to configure DHCP on through SSH (requires -f)')
+parser.add_argument('-fP', '--firewall-port', type=int, default=7777, help='SSH port for the pfSense firewall (default is 22)')
+parser.add_argument('-fu', '--firewall-user', type=str, default='root', help='username for the pfSense firewall (requires -f)')
+parser.add_argument('-fp', '--firewall-password', type=str, default='S@lcianaszkot23', help='password for the pfSense firewall (requires -f)')
+parser.add_argument('-ft', '--firewall-timeout', type=float, default=5, help='time in seconds before connection to pfSense times out (default is 5)')
+parser.add_argument('-fc', '--firewall-config', type=str, default='/cf/conf/config.xml', help='path to configuration file in pfSense - this should be /cf/conf/config.xml (default) unless using a customised pfSense instance')
 
 args = parser.parse_args()
 
@@ -104,6 +104,32 @@ if args.user:
 			exit('Must specify username for new Proxmox VE user with either -u or -c')
 	else:
 		userid = args.user + '@pve'
+
+# Print command line arguments (for debugging)
+'''
+print("IDs:", args.ids)
+print("Clone Name:", args.clone_name)
+print("Clone Begin ID:", args.clone_begin_id)
+print("Clone Type:", args.clone_type)
+print("Start Clone:", args.start_clone)
+print("Create Bridge:", args.create_bridge)
+print("Bridge Subnet:", args.bridge_subnet)
+print("DHCP Begin:", args.dhcp_begin)
+print("DHCP End:", args.dhcp_end)
+print("Add Bridged VMs:", args.add_bridged_vms)
+print("Firewall Host:", args.firewall_host)
+print("Firewall Port:", args.firewall_port)
+print("Firewall Username:", args.firewall_username)
+print("Firewall Password:", args.firewall_password)
+print("Verbose:", args.verbose)
+
+print("Host:", args.host)
+print("User:", args.user)
+print("Token Name:", args.token_name)
+print("Token Value:", args.token_value)
+print("Verify SSL:", args.verify_ssl)
+print("Node:", args.proxmox_node)
+'''
 
 # Connect to Proxmox server
 pm = ProxmoxAPI(args.proxmox_host, user=args.proxmox_user, token_name=args.proxmox_token_name, token_value=args.proxmox_token_value, verify_ssl=args.verify_ssl)
@@ -250,6 +276,10 @@ if args.create_bridge:
 			ipconfig = 'ipconfig'+str(biggest+1)
 			_, subnet = args.bridge_subnet.split('/')
 			ip = 'ip='+cloudinit[vmid]+'/'+subnet
+			if args.firewall:
+				netaddr = args.bridge_subnet.split('/')[0]
+				gateway = args.firewall_ip if args.firewall_ip else netaddr[:-1] + str(int(netaddr[-1:])+1)
+				ip += ',gw='+gateway
 			params[ipconfig] = ip
 
 		pm.nodes(args.proxmox_node).qemu(vmid).config.put(**params)
