@@ -3,7 +3,7 @@
 A basic web interface that allows users to manage their access to Proxmox and create/revert/destroy one instance of an environment, within parameters that you define. These paramateres are defined in the [config.ini](web/config.ini) file, which has detailed comments explaining each option. This uses the Python remote management scripts for its backend. More information about the scripts may be found [here](Scripts.md).
 
 ### Setup
-**Note:** Requires Python 3. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
+**Note:** Requires Python 3.9. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
 *While this may be installed manually on Windows and has been tested on Windows 11, the setup scripts assume a Linux OS.*
 
 pip installation to be created in the near future
@@ -31,9 +31,10 @@ Additional notes on the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
 - If you'd like to perform a fully unattended installation (no prompts), be sure to:
-  - use `-f [True/False]` to specify whether you're using a pfSense firewall
-  - use `-s [True/False]` and `-w [True/False]` to specify whether you'd like to automatically install Python and web dependencies respectively
-  - use `-p [True/False]` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
+  - use `--firewall/--no-firewall` to specify whether you're using a pfSense firewall
+  - use `--script-dependencies/--no-script-dependencies` to specify whether you'd like to automatically install Python dependencies
+  - use `--web-dependencies/--no-web-dependencies` to specify whether you'd like to automatically install apache2 and php
+  - use `--add-to-path/--no-add-to-path` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
   - specify all other options! Any options you don't specify you'll be prompted to provide.
 
 Requirements for the automatic web setup to work:

@@ -3,7 +3,7 @@
 Scripts for managing users in bulk, creating templates from virtual machines, cloning environments for a set of users, reverting virtual machines, and destroying cloned environments. This serves as the backend for the web interface, which may be found [here](Web.md).
 
 ### Setup
-**Note:** Requires Python 3. These instructions are for installing ONLY the Python scripts. To install these scripts along with the web interface, consult the setup instructions [here](Web.md).
+**Note:** Requires Python 3.9. These instructions are for installing ONLY the Python scripts. To install these scripts along with the web interface, consult the setup instructions [here](Web.md).
 
 pip installation to be created in the near future
 1. Create a new API key on Proxmox to be used by these scripts for remote access
@@ -11,7 +11,7 @@ pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
-1. Run the [setup script](setup.py): `sudo setup.py -w False` or `sudo python setup.py -w False`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the scripts accordingly.
+1. Run the [setup script](setup.py): `sudo setup.py --no-web-dependencies` or `sudo python setup.py --no-web-dependencies`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the scripts accordingly.
 1. (Optional) If you plan to use the command line scripts directly as well, modify [easyclone.sh](scripts/easyclone.sh) and [easypurge.sh](scripts/easypurge.sh) to your liking. See comments in each script.
 You can add these to your PATH so that they may be executed as commands with the following:
 ```
@@ -23,9 +23,9 @@ Additional notes on the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
 - If you'd like to perform a fully unattended installation (no prompts), be sure to:
-  - use `-f [True/False]` to specify whether you're using a pfSense firewall
-  - use `-s [True/False]` to specify whether you'd like to automatically install Python dependencies respectively
-  - use `-p [True/False]` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
+  - use `--firewall/--no-firewall` to specify whether you're using a pfSense firewall
+  - use `--script-dependencies/--no-script-dependencies` to specify whether you'd like to automatically install Python dependencies
+  - use `--add-to-path/--no-add-to-path` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
   - specify all other options! Any options you don't specify you'll be prompted to provide.
 
 ### Commands
