@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 
 sys.path.append('scripts')
-from color import printc, Color
+from colors import printc, Color
 
 scripts = ['scripts/template.py', 'scripts/clone.py', 'scripts/purge.py', 'scripts/puser.py']
 web = ['web/index.php', 'web/login.php', 'web/logout.php', 'web/password.php', 'web/register.php', 'web/scripts.php', 'web/test.php', 'web/creds.php']
