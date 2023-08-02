@@ -282,7 +282,7 @@ params = {
 
 print('Updating script files to reflect provided information')
 for script in scripts:
-    replace(script_dir+script, params)
+    replace(scripts_dir+script, params)
 replace(web_dir+config, params)
 printc('All script files updated accordingly!\n', Color.GREEN)
 
@@ -319,7 +319,7 @@ if platform.system() == 'Linux':
             run_command(f'ln -s {file} {link}')
             print(f'{script} -> {link}')
 
-        printc('Links added to PATH for all scripts!', Color.GREEN)
+        printc('Links added to PATH for all scripts!\n', Color.GREEN)
 
     if args.web_dependencies is None:
         print('Requirements for the automatic web setup to work:')
@@ -344,9 +344,9 @@ if platform.system() == 'Linux':
             printc('No suitable package manager found! Please install apache2 and php manually', Color.YELLOW)
             exit
 
-        print(f'Located {command[0]} package manager')
-        
         manager = command.split(' ')[0]
+        print(f'Located {manager} package manager')
+        
         if manager == 'apt' or manager == 'apt-get':
             run_command(f'{manager} update')
 
@@ -357,7 +357,7 @@ if platform.system() == 'Linux':
         if args.domain_name is None:
             args.domain_name = input('Enter domain name or IP address used to visit website: ')
 
-        print('It is highly recommended that you create a custom TLS certificate for serving the website securely')
+        printc('It is highly recommended that you create a custom TLS certificate for serving the website securely', Color.YELLOW)
         print('This can be self-signed with openssl or a free signed certificate from LetsEncrypt')
         print('Using defaults (pressing enter) for the following 2 options will use the self-signed cert packaged in this repo')
         print('Note that this cert will present a warning message in browsers since it\'s self-signed, and it may be expired')
@@ -379,8 +379,8 @@ if platform.system() == 'Linux':
             'TLSCRT': move(args.tls_crt, '/etc/ssl/certs'),
             'TLSKEY': move(args.tls_key, '/etc/ssl/private')
         }
-        replace(apache_config, params)
-        move(apache_config, f'/etc/{service}/sites-available')
+        replace(web_dir+apache_config, params)
+        move(web_dir+apache_config, f'/etc/{service}/sites-available')
 
         run_command('a2enmod ssl')
         run_command('a2ensite default.conf')
