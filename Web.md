@@ -7,6 +7,9 @@ A basic web interface that allows users to manage their access to Proxmox and cr
 *While this may be installed on Windows and has been tested on Windows 11, the setup scripts assume a Linux OS.*
 
 pip installation to be created in the near future
+1. Create a new API key on Proxmox to be used by these scripts for remote access
+1. (Optional) Create a pfSense virtual machine on Proxmox and enable SSH
+1. (Optional but recommended) Purchase a domain name and obtain a TLS certificate for that domain
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
