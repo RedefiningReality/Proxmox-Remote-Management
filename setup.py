@@ -330,11 +330,11 @@ if platform.system() == 'Linux':
         service = 'apache2'
 
         if shutil.which('apt') is not None:
-            command = 'apt install -y apache2 php libapache2-mod-php'
+            command = 'apt install -y apache2 php libapache2-mod-php php-curl'
         elif shutil.which('apt-get') is not None:
-            command = 'apt-get install -y apache2 php libapache2-mod-php'
+            command = 'apt-get install -y apache2 php libapache2-mod-php php-curl'
         elif shutil.which('yum') is not None:
-            command = 'yum install -y httpd php'
+            command = 'yum install -y httpd php php-curl'
             service = 'httpd'
 
         if command == '':
@@ -344,9 +344,7 @@ if platform.system() == 'Linux':
 
         manager = command.split(' ')[0]
         print(f'Located {manager} package manager')
-        
-        if manager == 'apt' or manager == 'apt-get':
-            run_command(f'{manager} update')
+        run_command(f'{manager} update')
 
         print('Installing packages')
         run_command(command)
