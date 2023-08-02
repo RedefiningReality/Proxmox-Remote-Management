@@ -11,11 +11,15 @@ warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 sys.path.append('scripts')
 from colors import printc, Color
 
-scripts = ['scripts/template.py', 'scripts/clone.py', 'scripts/purge.py', 'scripts/puser.py']
-web = ['web/index.php', 'web/login.php', 'web/logout.php', 'web/password.php', 'web/register.php', 'web/scripts.php', 'web/test.php', 'web/creds.php']
-tls = ['web/tls.crt', 'web/tls.key']
-apache_config = 'web/default.conf'
-config = 'web/config.ini'
+scripts_dir = 'scripts/'
+scripts = ['template.py', 'clone.py', 'purge.py', 'puser.py']
+
+web_dir = 'web/'
+web = ['index.php', 'login.php', 'logout.php', 'password.php', 'register.php', 'scripts.php', 'test.php', 'creds.php']
+
+tls = ['tls.crt', 'tls.key']
+apache_config = 'default.conf'
+config = 'config.ini'
 python_dependencies = ['proxmoxer', 'requests', 'paramiko', 'scp']
 
 def is_int(num):
@@ -248,7 +252,7 @@ if args.configure_firewall:
             printc('Unable to read configuration file!', Color.RED)
             exit()
         else:
-            printc('Successfully read configuration file!', Color.GREEN)
+            printc('Successfully read configuration file!\n', Color.GREEN)
 
         ssh.exec_command('exit')
         ssh.close()
@@ -285,9 +289,9 @@ printc('All script files updated accordingly!\n', Color.GREEN)
 if platform.system() == 'Linux':
     print('Adding read and execute permissions for all users to all files')
     for script in scripts:
-        os.chmod(script, 0o755)
+        os.chmod(script_dir+script, 0o755)
     for file in web:
-        os.chmod(file, 0o755)
+        os.chmod(web_dir+file, 0o755)
 
     if args.add_to_path is None:
         args.add_to_path = input('Add script links to PATH (recommended)? [Y/n]: ').lower() != 'n'
@@ -310,7 +314,7 @@ if platform.system() == 'Linux':
         print('Adding scripts to PATH so you can run them as commands')
         current = os.getcwd()
         for script in scripts:
-            file = f'{current}/{script}'
+            file = f'{current}/{script_dir+script}'
             link = f'{base}/{script[:-3]}'
             run_command(f'ln -s {file} {link}')
             print(f'{script} -> {link}')
@@ -362,13 +366,13 @@ if platform.system() == 'Linux':
             args.tls_crt = input('Enter path to .crt file for TLS certificate (or leave blank): ')
 
         if args.tls_crt == '':
-            args.tls_crt = tls[0]
+            args.tls_crt = web_dir+tls[0]
 
         if args.tls_key is None:
             args.tls_key = input('Enter path to .key file for TLS certificate (or leave blank): ')
 
         if args.tls_key == '':
-            args.tls_key = tls[1]
+            args.tls_key = web_dir+tls[1]
 
         params = {
             'DOMAIN': args.domain_name,
@@ -387,12 +391,12 @@ if platform.system() == 'Linux':
         if args.config_path == '':
             args.config_path = os.getcwd()
 
-        config = move(config, args.config_path)
+        config = move(web_dir+config, args.config_path)
 
         print('Updating php scripts and moving them to default web directory')
         for file in web:
-            replace(file, {'config.ini', config})
-            move(file, '/var/www/html')
+            replace(web_dir+file, {'config.ini', config})
+            move(web_dir+file, '/var/www/html')
 
         print('Starting apache2 web service')
         run_command(f'systemctl enable {service}')
