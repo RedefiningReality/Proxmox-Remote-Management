@@ -13,7 +13,8 @@ pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
-1. Run the [setup script](setup-web.py): `sudo setup-web.py` or `sudo python setup-web.py`. It will walk you through the process, test your current Proxmox and pfSense installation, modify the Python scripts accordingly, and prepare the web files to be served using Apache2 and PHP.
+1. Run the [setup script](setup.py): `sudo setup.py` or `sudo python setup.py`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the scripts accordingly.
+1. Run the [web configuration script](configure.py): `sudo configure.py`. It will configure Apache2 and PHP to securely serve your web files.
 1. Modify [config.ini](web/config.ini) to reflect your desired configuration. This will let you determine how users authenticate, what the cloning process looks like, and where to log output, among other things.
 1. (Optional) You may test out your configuration by navigating to test.php in a web browser (https://localhost/test.php)
    - The commands to be issued for creating, reverting, and destroying environments will be shown at the top.
@@ -31,11 +32,11 @@ Additional notes on the setup script:
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
 - If you'd like to perform a fully unattended installation (no prompts), be sure to:
   - use `-f [True/False]` to specify whether you're using a pfSense firewall
-  - use `-sd [True/False]` and `-wd [True/False` to specify whether you'd like to automatically install Python and web dependencies respectively
+  - use `-s [True/False]` and `-w [True/False]` to specify whether you'd like to automatically install Python and web dependencies respectively
   - use `-p [True/False]` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
   - specify all other options! Any options you don't specify you'll be prompted to provide.
 
-Requirements for the automatic web setup (`-wd`) to work:
+Requirements for the automatic web setup to work:
  - apt, apt-get, or yum package manager
  - systemd service manager
 
