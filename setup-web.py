@@ -12,7 +12,7 @@ sys.path.append('scripts')
 from colors import printc, Color
 
 scripts_dir = 'scripts/'
-scripts = ['template.py', 'clone.py', 'purge.py', 'puser.py']
+scripts = ['template.py', 'revert.py', 'clone.py', 'purge.py', 'puser.py']
 
 web_dir = 'web/'
 web = ['index.php', 'login.php', 'logout.php', 'password.php', 'register.php', 'scripts.php', 'test.php', 'creds.php']
