@@ -6,6 +6,8 @@ Scripts for managing users in bulk, creating templates from virtual machines, cl
 **Note:** Requires Python 3. These instructions are for installing ONLY the Python scripts. To install these scripts along with the web interface, consult the setup instructions [here](Web.md).
 
 pip installation to be created in the near future
+1. Create a new API key on Proxmox to be used by these scripts for remote access
+1. (Optional) Create a pfSense virtual machine on Proxmox and enable SSH
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
