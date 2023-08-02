@@ -11,7 +11,7 @@ pip installation to be created in the near future
 1. Select a folder to save the scripts in. My recommendation for Linux is `/opt`: `cd /opt`
 1. Clone this repository: `git clone https://github.com/RedefiningReality/Proxmox-Remote-Management.git`
 1. Enter the cloned directory: `cd Proxmox-Remote-Management`
-1. Run the [setup script](setup.py): `sudo setup.py -w False` or `sudo python setup.py -w False`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the scripts accordingly.
+1. Run the [setup script](setup.py): `sudo setup.py --no-web-dependencies` or `sudo python setup.py --no-web-dependencies`. It will walk you through the process, test your current Proxmox and pfSense installation, and modify the scripts accordingly.
 1. (Optional) If you plan to use the command line scripts directly as well, modify [easyclone.sh](scripts/easyclone.sh) and [easypurge.sh](scripts/easypurge.sh) to your liking. See comments in each script.
 You can add these to your PATH so that they may be executed as commands with the following:
 ```
