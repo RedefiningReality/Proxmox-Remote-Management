@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 update_password($username, $new_password, $student['creds_file']);
             }
 
-            header("location: logout.php");
+            header("location: index.php");
             exit;
         } else {
             $change_err = "Failed to change password.";
