@@ -3,7 +3,6 @@
 import argparse
 import platform
 import socket
-from proxmoxer import ProxmoxAPI, ResourceException
 import os, sys, shutil, subprocess
 
 import warnings
@@ -111,6 +110,16 @@ args = parser.parse_args()
 if platform.system() == 'Linux' and os.getuid() != 0:
     print(f'Please run this script as root: sudo {sys.argv[0]}')
 
+if args.script_dependencies is None:
+    args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
+
+if args.script_dependencies:
+    print('Installing script dependencies with pip package manager')
+    command = f'{sys.executable} -m pip install '
+    command += python_dependencies.join(' ')
+    run_command(command)
+    printc('Script dependencies installed!\n', Color.GREEN)
+
 if args.proxmox_host is None:
     host = input('Enter hostname of Proxmox instance (eg. cyber.ece.iit.edu or 216.47.144.122): ')
     port = input('Enter port number of Proxmox instance (default 8006): ')
@@ -149,6 +158,8 @@ if args.proxmox_token_value is None:
 
 # Test authentication
 if not args.bypass_checks:
+    from proxmoxer import ProxmoxAPI, ResourceException
+    
     print(f'Testing authentication as user {args.proxmox_user} with token {args.proxmox_token_name}:{args.proxmox_token_value}')
     pm = ProxmoxAPI(args.proxmox_host, user=args.proxmox_user, token_name=args.proxmox_token_name, token_value=args.proxmox_token_value, verify_ssl=False)
 
@@ -207,9 +218,8 @@ if args.configure_firewall:
 
     # Test authentication
     if not args.bypass_checks:
-        import paramiko
-
         print(f'Testing authentication as user {args.firewall_user} with password {args.firewall_password}')
+        import paramiko
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             
@@ -265,20 +275,6 @@ params = {
     'FIREWALLTIMEOUT': str(args.firewall_timeout),
     'FIREWALLCONFIG': args.firewall_config
 }
-
-if args.script_dependencies is None:
-    args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
-
-if args.script_dependencies:
-    print('Installing script dependencies with pip package manager')
-    command = [sys.executable, '-m', 'pip', 'install']
-    command.extend(python_dependencies)
-    proc = subprocess.run(command)
-
-    if proc.returncode == 0:
-        printc('Script dependencies installed!\n', Color.GREEN)
-    else:
-        printc('Failed to install dependencies!', Color.RED)
 
 print('Updating script files to reflect provided information')
 for script in scripts:

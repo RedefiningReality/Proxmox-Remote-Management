@@ -70,6 +70,20 @@ parser.add_argument('-fc', '--firewall-config', type=str, help='path to configur
 
 args = parser.parse_args()
 
+if args.script_dependencies is None:
+    args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
+
+if args.script_dependencies:
+    print('Installing script dependencies with pip package manager')
+    command = [sys.executable, '-m', 'pip', 'install']
+    command.extend(dependencies)
+    proc = subprocess.run(command)
+
+    if proc.returncode == 0:
+        printc('Script dependencies installed!\n', Color.GREEN)
+    else:
+        printc('Failed to install dependencies!', Color.RED)
+
 if args.proxmox_host is None:
     host = input('Enter hostname of Proxmox instance (eg. cyber.ece.iit.edu or 216.47.144.122): ')
     port = input('Enter port number of Proxmox instance (default 8006): ')
@@ -224,20 +238,6 @@ params = {
     'FIREWALLTIMEOUT': str(args.firewall_timeout),
     'FIREWALLCONFIG': args.firewall_config
 }
-
-if args.script_dependencies is None:
-    args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
-
-if args.script_dependencies:
-    print('Installing script dependencies with pip package manager')
-    command = [sys.executable, '-m', 'pip', 'install']
-    command.extend(dependencies)
-    proc = subprocess.run(command)
-
-    if proc.returncode == 0:
-        printc('Script dependencies installed!\n', Color.GREEN)
-    else:
-        printc('Failed to install dependencies!', Color.RED)
 
 print('Updating script files to reflect provided information')
 for script in scripts:
