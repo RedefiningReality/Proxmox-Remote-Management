@@ -86,13 +86,13 @@ def run_command(command):
 # Parse command line arguments
 parser = argparse.ArgumentParser('setup Proxmox automated environment scripts')
 
-parser.add_argument('-b', '--bypass-checks', action='store_true', help='Bypass all checks to ensure correct values were entered (useful if you haven\'t finished setting up Proxmox)')
-parser.add_argument('-sd', '--script-dependencies', type=bool, help='True/False - Install script dependencies using the pip package manager')
-parser.add_argument('-wd', '--web-dependencies', type=bool, help='True/False - Install web dependencies (apache2 and php) using the system package manager')
-parser.add_argument('-d', '--domain-name', type=str, help='Domain name or IP address for website - used to redirect HTTP requests on port 80 to HTTPS on port 443')
-parser.add_argument('-tc', '--tls-crt', type=str, help='Path to TLS crt file for SSL/TLS on webpages')
-parser.add_argument('-tk', '--tls-key', type=str, help='Path to TLS key file for SSL/TLS on webpages')
-parser.add_argument('-c', '--config-path', type=str, help='Desired directory to place web configuration file (config.ini)')
+parser.add_argument('-b', '--bypass-checks', action='store_true', help='bypass all checks to ensure correct values were entered (useful if you haven\'t finished setting up Proxmox)')
+parser.add_argument('-sd', '--script-dependencies', type=bool, help='True/False - install script dependencies using the pip package manager')
+parser.add_argument('-wd', '--web-dependencies', type=bool, help='True/False - install web dependencies and automatically configure web server')
+parser.add_argument('-d', '--domain-name', type=str, help='domain name or IP address for website - used to redirect HTTP requests on port 80 to HTTPS on port 443')
+parser.add_argument('-tc', '--tls-crt', type=str, help='path to TLS crt file for SSL/TLS on webpages')
+parser.add_argument('-tk', '--tls-key', type=str, help='path to TLS key file for SSL/TLS on webpages')
+parser.add_argument('-c', '--config-path', type=str, help='desired directory to place web configuration file (config.ini)')
 parser.add_argument('-p', '--add-to-path', type=bool, help='True/False - whether or not to add scripts to PATH')
 
 parser.add_argument('-pH', '--proxmox-host', type=str, help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.122:443)')
@@ -387,7 +387,7 @@ if platform.system() == 'Linux':
         run_command('a2ensite default.conf')
 
         if args.config_path is None:
-            args.config_path = input('Enter desired path to web configuration file config.ini (default is current directory): ')
+            args.config_path = input('Enter desired destination directory for web configuration file config.ini (default is current directory): ')
 
         if args.config_path == '':
             args.config_path = os.getcwd()
@@ -396,7 +396,7 @@ if platform.system() == 'Linux':
 
         print('Updating php scripts and moving them to default web directory')
         for file in web:
-            replace(web_dir+file, {'config.ini', config})
+            replace(web_dir+file, {'config.ini': config})
             move(web_dir+file, '/var/www/html')
 
         print('Starting apache2 web service')
