@@ -39,33 +39,11 @@ Additional notes about the setup script:
 ### Command examples
 `template 500-505 -r`
 
-`clone 500-505 -c doge -i 600 -u -n "Your Mom" -e memes4dayz@totallyvaliddomain.com -p Password123 -b -bs 10.0.21.0/24 -bv 400,402,500-503 -f -fi 10.0.21.254 -db 10.0.21.10 -de 10.0.21.245 -dd 1.1.1.1 8.8.8.8 -ds 500,10.0.21.3 -s`
+`clone 500-505 -c doge -i 600 -u -n "Your Mom" -e memes4dayz@totallyvaliddomain.com -p Password123 -b -bs 10.0.21.0/24 -bv 400,402,500-503 -ss initial -f -fi 10.0.21.254 -db 10.0.21.10 -de 10.0.21.245 -dd 1.1.1.1 8.8.8.8 -ds 500,10.0.21.3 -s`
+
+`revert -c doge -ss initial -s`
 
 `purge doge -u -b -bv 400,402 -f`
 
 ### Usage information
-The help screens for each command are sufficiently detailed to warrant not writing other documentation. However, `puser` has [its own page](Proxmox%20User%20(PUser)%20Script%20Guide.md) that's worth checking out.
-#### [Setup](setup-scripts.py)
-```
-
-```
-#### [Template](scripts/template.py)
-```
-
-```
-#### [Clone](scripts/clone.py)
-```
-
-```
-#### [Revert](scripts/revert.py)
-```
-
-```
-#### [Purge](scripts/purge.py)
-```
-
-```
-#### [PUser](scripts/puser.py)
-```
-
-```
+The help screens for each command are sufficiently detailed to warrant not writing other documentation. Run any command with `-h`: eg. `clone -h`. However, `puser` has [its own page](Proxmox%20User%20(PUser)%20Script%20Guide.md) that's worth checking out.
