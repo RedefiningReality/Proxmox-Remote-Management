@@ -386,6 +386,7 @@ if platform.system() == 'Linux':
 
         run_command('a2enmod ssl')
         run_command('a2ensite default.conf')
+        printc('Apache configuration created and enabled!\n', Color.GREEN)
 
         if args.config_path is None:
             args.config_path = input('Enter desired destination directory for web configuration file config.ini (default is current directory): ')
@@ -394,13 +395,21 @@ if platform.system() == 'Linux':
             args.config_path = os.getcwd()
 
         config = move(web_dir+config, args.config_path)
-
+        printc('Created website configuration file config.ini!\n', Color.GREEN)
+        
+        print('Removing existing pages in web directory')
+        run_command('rm -rf /var/www/html/*')
+        print('Removed all existing pages')
+        
         print('Updating php scripts and moving them to default web directory')
         for file in web:
             replace(web_dir+file, {'config.ini': config})
             move(web_dir+file, '/var/www/html')
+        printc('Web directory is now hosting all site files!\n', Color.GREEN)
 
-        print('Starting apache2 web service')
+        print('Setting apache2 web service to start on boot')
         run_command(f'systemctl enable {service}')
-        run_command(f'systemctl start {service}')
-        printc('Web service fully configured and started', Color.GREEN)
+        printc('Web service prepared and will start on boot\n', Color.GREEN)
+        
+        print(f'To manage site preferences, update your configuration in {args.config_path}')
+        print(f'Then run the following to start your webserver: systemctl start {service}')
