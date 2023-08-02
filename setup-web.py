@@ -115,6 +115,7 @@ if platform.system() == 'Linux' and os.getuid() != 0:
     print(f'Please run this script as root: sudo {sys.argv[0]}')
 
 if args.script_dependencies is None:
+    print(f'The following Python script dependencies are required: '+', '.join(python_dependencies))
     args.script_dependencies = input('Install script dependencies using pip package manager? [Y/n]').lower() != 'n'
 
 if args.script_dependencies:
@@ -289,7 +290,7 @@ printc('All script files updated accordingly!\n', Color.GREEN)
 if platform.system() == 'Linux':
     print('Adding read and execute permissions for all users to all files')
     for script in scripts:
-        os.chmod(script_dir+script, 0o755)
+        os.chmod(scripts_dir+script, 0o755)
     for file in web:
         os.chmod(web_dir+file, 0o755)
 
@@ -314,7 +315,7 @@ if platform.system() == 'Linux':
         print('Adding scripts to PATH so you can run them as commands')
         current = os.getcwd()
         for script in scripts:
-            file = f'{current}/{script_dir+script}'
+            file = f'{current}/{scripts_dir+script}'
             link = f'{base}/{script[:-3]}'
             run_command(f'ln -s {file} {link}')
             print(f'{script} -> {link}')
