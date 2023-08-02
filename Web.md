@@ -4,7 +4,7 @@ A basic web interface that allows users to manage their access to Proxmox and cr
 
 ### Setup
 **Note:** Requires Python 3. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
-*While this may be installed on Windows and has been tested on Windows 11, the setup scripts assume a Linux OS.*
+*While this may be installed manually on Windows and has been tested on Windows 11, the setup scripts assume a Linux OS.*
 
 pip installation to be created in the near future
 1. Create a new API key on Proxmox to be used by these scripts for remote access
@@ -26,10 +26,20 @@ ln -s easyclone.sh /usr/bin/easyclone
 ln -s easypurge.sh /usr/bin/easypurge
 ```
 
-Additional notes about the setup script:
+Additional notes on the setup script:
 - You may pass any options as arguments instead of answering the prompts. Prompts associated with options you pass in this way will not be displayed.
 - If you don't want to validate connection to Proxmox and/or pfSense (not recommended), you may use `-b` to bypass all checks.
-- If you'd like to perform a fully unattended installation (no prompts), use `-f [True/False]` to specify whether you're using a pfSense firewall, `-d [True/False]` to specify whether you'd like to automatically install Python dependencies using pip, and `-p [True/False]` to specify whether you'd like to add the finished scripts to your PATH (Linux only) -> be sure you specify all other options!
+- If you'd like to perform a fully unattended installation (no prompts), be sure to:
+  - use `-f [True/False]` to specify whether you're using a pfSense firewall
+  - use `-sd [True/False]` and `-wd [True/False` to specify whether you'd like to automatically install Python and web dependencies respectively
+  - use `-p [True/False]` to specify whether you'd like to add links to the finished scripts to your PATH (recommended)
+  - specify all other options! Any options you don't specify you'll be prompted to provide.
+
+Requirements for the automatic web setup (`-wd`) to work:
+ - apt, apt-get, or yum package manager
+ - systemd service manager
+
+These requirements will be met on default installations of most popular Linux distros (Debian, Ubuntu, Fedora, RHEL, CentOS, etc.)
 
 ### Pages
 - [config.ini](web/config.ini) ⇒ configuration file containing every parameter that can be modified to suit your needs
