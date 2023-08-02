@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_err = "Please enter a password.";
     } elseif (strlen(trim($_POST["password"])) < 6) {
         $password_err = "Password must have at least 6 characters.";
-    } elseif (str_contains(trim($_POST["password"]), ",")) {
+    } elseif (strpos($_POST["password"], ",") !== false) {
         $password_err = "Password may not contain a comma.";
     } else {
         $password = trim($_POST["password"]);
