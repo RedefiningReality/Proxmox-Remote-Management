@@ -38,6 +38,7 @@ Additional notes about the setup script:
 Requirements for the automatic web setup (`-wd`) to work:
  - apt, apt-get, or yum package manager
  - systemd service manager
+
 These requirements will be met on default installations of most popular Linux distros (Debian, Ubuntu, Fedora, RHEL, CentOS, etc.)
 
 ### Pages
