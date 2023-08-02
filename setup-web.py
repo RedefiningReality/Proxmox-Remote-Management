@@ -287,6 +287,12 @@ replace(config, params)
 printc('All script files updated accordingly!\n', Color.GREEN)
 
 if platform.system() == 'Linux':
+    print('Adding read and execute permissions for all users to all files')
+    for script in scripts:
+        os.chmod(script, 0o755)
+    for file in web:
+        os.chmod(file, 0o755)
+
     if args.add_to_path is None:
         args.add_to_path = input('Add script links to PATH (recommended)? [Y/n]: ').lower() != 'n'
 
