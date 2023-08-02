@@ -86,9 +86,9 @@ def run_command(command):
 parser = argparse.ArgumentParser('setup Proxmox remote management scripts')
 
 parser.add_argument('-b', '--bypass-checks', action='store_true', help='bypass all checks to ensure correct values were entered (useful if you haven\'t finished setting up Proxmox)')
-parser.add_argument('-sd', '--script-dependencies', type=bool, help='True/False - install script dependencies using the pip package manager')
-parser.add_argument('-wd', '--web-dependencies', type=bool, help='True/False - install web dependencies using the apt,apt-get, or yum package manager')
-parser.add_argument('-p', '--add-to-path', type=bool, help='True/False - whether or not to add scripts to PATH')
+parser.add_argument('-s', '--script-dependencies', action=argparse.BooleanOptionalAction, help='True/False - install script dependencies using the pip package manager')
+parser.add_argument('-w', '--web-dependencies', action=argparse.BooleanOptionalAction, help='True/False - install web dependencies using the apt,apt-get, or yum package manager')
+parser.add_argument('-p', '--add-to-path', action=argparse.BooleanOptionalAction, help='True/False - whether or not to add scripts to PATH')
 
 parser.add_argument('-pH', '--proxmox-host', type=str, help='Proxmox hostname and/or port number (ex: cyber.ece.iit.edu or 216.47.144.122:443)')
 parser.add_argument('-pu', '--proxmox-user', type=str, help='Proxmox username for authentication')
@@ -96,7 +96,7 @@ parser.add_argument('-ptn', '--proxmox-token-name', type=str, help='name of Prox
 parser.add_argument('-ptv', '--proxmox-token-value', type=str, help='value of Proxmox authentication token')
 parser.add_argument('-pn', '--proxmox-node', type=str, help='node containing virtual machines to template')
 
-parser.add_argument('-f', '--configure-firewall', type=bool, help='True/False - whether or not to configure pfSense firewall (useful for scripted/unattended installation)')
+parser.add_argument('-f', '--configure-firewall', action=argparse.BooleanOptionalAction, help='True/False - whether or not to configure pfSense firewall (useful for scripted/unattended installation)')
 parser.add_argument('-fH', '--firewall-host', type=str, help='hostname of pfSense firewall to configure DHCP on through SSH')
 parser.add_argument('-fP', '--firewall-port', type=int, help='SSH port for the pfSense firewall (default is 22)')
 parser.add_argument('-fu', '--firewall-user', type=str, help='username for the pfSense firewall')
