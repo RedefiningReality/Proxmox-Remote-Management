@@ -6,7 +6,7 @@ A basic web interface that allows users to manage their access to Proxmox and cr
 **Note:** Requires Python 3.9. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
 *While this may be installed manually on Windows and has been tested on Windows 11, the setup scripts assume a Linux OS.*
 
-If you ever run into issues with the website, be sure to check the apache error log (`tail /var/log/apache2/error.log` for most Linux distros).
+If you ever run into issues with the website, be sure to check the apache error log (`tail /var/log/apache2/error.log` for most Linux distros). It's likely you either specified a path that your web user doesn't have permissions to write the creds file to (**creds_file** in config.ini) or PHP curl isn't installed (`sudo apt/apt-get/yum install php-curl`).
 1. Create a new API key on Proxmox to be used by these scripts for remote access
 1. (Optional) Create a pfSense virtual machine on Proxmox and enable SSH
 1. (Optional but recommended) Purchase a domain name and obtain a TLS certificate for that domain
