@@ -4,8 +4,10 @@ import argparse
 import platform
 import socket
 from proxmoxer import ProxmoxAPI, ResourceException
-from colors import printc, Color
 import os, sys, subprocess
+
+sys.path.append('scripts')
+from color import printc, Color
 
 import warnings
 warnings.filterwarnings("ignore", message="Unverified HTTPS request")
