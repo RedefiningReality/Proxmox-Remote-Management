@@ -69,6 +69,10 @@ parser.add_argument('-c', '--config-path', type=str, help='desired directory to 
 
 args = parser.parse_args()
 
+if platform.system() == 'Linux' and os.getuid() != 0:
+    print(f'Please run this script as root: sudo {sys.argv[0]}')
+    exit()
+
 if args.web_user:
     web_user = pwd.getpwnam(args.web_user)
     uid = web_user.pw_uid
