@@ -291,7 +291,7 @@ if platform.system() == 'Linux':
         os.chmod(web_dir+file, 0o755)
 
     if args.add_to_path is None:
-        args.add_to_path = input('Add script links to PATH (recommended)? [Y/n]: ').lower() != 'n'
+        args.add_to_path = input('Add script links to PATH? (recommended) [Y/n]: ').lower() != 'n'
 
     if args.add_to_path:
         acceptable = os.getenv('PATH')
@@ -323,7 +323,7 @@ if platform.system() == 'Linux':
         print(' - apt, apt-get, or yum package manager')
         print(' - systemd service manager')
         print('These requirements will be met on default installations of most popular Linux distros (Debian, Ubuntu, Fedora, RHEL, CentOS, etc.)')
-        args.web_dependencies = input('Set up apache2 and php to serve web files automatically [Y/n]: ').lower() != 'n'
+        args.web_dependencies = input('Install apache2 and php packages? (required for web setup) [Y/n]: ').lower() != 'n'
 
     if args.web_dependencies:
         command = ''
