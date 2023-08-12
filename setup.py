@@ -57,7 +57,7 @@ def move(source, destination):
 
     if not os.path.isfile(source):
         printc(f'File {source} not found!', Color.RED)
-        exit
+        exit()
 
     if not os.path.exists(destination):
         os.makedirs(destination)
@@ -70,7 +70,7 @@ def move(source, destination):
     except Exception as e:
         printc(f'Failed to move file {source} to directory {destination}', Color.RED)
         print(f'Exception: {e}')
-        exit
+        exit()
 
 def run_command(command):
     print(f'Running command: {command}')
@@ -80,7 +80,7 @@ def run_command(command):
         printc(f'Command failed!', Color.RED)
         print(f'Return code: {e.returncode}')
         print(f'Error output: {e.output}')
-        exit
+        exit()
 
 # Parse command line arguments
 parser = argparse.ArgumentParser('setup Proxmox remote management scripts')
