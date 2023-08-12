@@ -116,7 +116,7 @@ if args.script_dependencies is None:
 
 if args.script_dependencies:
     print('Installing script dependencies with pip package manager')
-    command = f'{sys.executable} -m pip install '
+    command = f'{sys.executable} -m pip install --break-system-packages '
     command += ' '.join(python_dependencies)
     run_command(command)
     printc('Script dependencies installed!\n', Color.GREEN)
