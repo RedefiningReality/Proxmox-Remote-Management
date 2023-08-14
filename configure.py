@@ -145,6 +145,7 @@ with open(sessions, 'w') as fp:
     pass
 print('Setting ownership of sessions file')
 os.chown(sessions, uid, gid)
+os.chown('/var/www/html', uid, gid)
 printc('Web directory is now hosting all site files!\n', Color.GREEN)
 
 print('Setting apache2 web service to start on boot')
