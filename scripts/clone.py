@@ -267,8 +267,17 @@ if args.create_bridge:
 		device = 'net' + str(biggest+1)
 		print(f'Next available device name: {device}')
 
+		type = 'virtio'
+		print(f'Getting OS of virtual machine with ID {vmid}')
+		config = pm.nodes(args.proxmox_node).qemu(vmid).config.get()
+		if 'ostype' in config and config['ostype'][0] == 'w':
+			type = 'e1000'
+			print('OS labelled as Windows')
+		else:
+			print('OS not labelled as Windows')
+
 		print(f'Adding Linux bridge to virtual machine with ID {vmid}')
-		bridge = 'virtio,bridge='+iface+',firewall=1'
+		bridge = type+',bridge='+iface+',firewall=1'
 		params = {device: bridge}
 
 		# Assign cloud-init IP if applicable
@@ -290,7 +299,9 @@ if args.create_bridge:
 			print(f'Retreiving MAC address of network device {device}')
 			config = pm.nodes(args.proxmox_node).qemu(vmid).config.get()
 			dev = config[device]
-			idx = dev.index('virtio=')+7
+			idx = dev.find('virtio=')+7
+			if idx == -1:
+				idx = dev.find('e1000=')+6
 			mac = dev[idx:idx+17]
 			ip = static[vmid]
 			print(f'MAC address: {mac}')
