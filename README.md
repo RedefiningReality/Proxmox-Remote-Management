@@ -1,5 +1,5 @@
 # Proxmox and pfSense Remote Management
-https://youtube.com/playlist?list=PLSpsCUl2cY8at6Dr0c28G6-yC1exBnqrR
+YouTube Playlist: https://youtube.com/playlist?list=PLSpsCUl2cY8at6Dr0c28G6-yC1exBnqrR
 
 Tired of being reliant on external platforms like TryHackMe and HackTheBox? Want to host your own machines on your own servers? This repo is for you! Set up environments the way you like them in a single configuration file and provide students/users with a secure web interface where they can authenticate to start, stop, access, and revert their unique automatically-provisioned copy of the environment. Environments can be as complex as you desire, even with many virtual machines spanning multiple subnets. Integrates directly with the Proxmox web interface for interacting with virtual machines and pfSense for internet access and network logging/management.
 
