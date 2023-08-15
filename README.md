@@ -2,7 +2,7 @@
 YouTube Playlist: https://youtube.com/playlist?list=PLSpsCUl2cY8at6Dr0c28G6-yC1exBnqrR
 
 ##### User
-![control panel](https://github.com/RedefiningReality/Proxmox-Remote-Management/assets/9508666/d3ba7d12-7851-4d53-9a52-8943e21b64db)
+![control panel](https://github.com/RedefiningReality/Proxmox-Remote-Management/assets/9508666/d3ba7d12-7851-4d53-9a52-8943e21b64db | width=100)
 ![john login](https://github.com/RedefiningReality/Proxmox-Remote-Management/assets/9508666/e3ea2c3e-a29b-4e7d-b525-b8756ea081e5)
 
 ##### Administrator
