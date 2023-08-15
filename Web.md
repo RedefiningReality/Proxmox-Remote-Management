@@ -44,6 +44,7 @@ Requirements for the automatic web setup to work:
 These requirements will be met on default installations of most popular Linux distros (Debian, Ubuntu, Fedora, RHEL, CentOS, etc.)
 
 ### Pages
+First of all, some credit where it's due. The HTML for the login pages was taken from here: [https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php](https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php). However, instead of using SQL, all authentication information is directly forwarded to Proxmox (TLS encrypted).
 - [config.ini](web/config.ini) ⇒ configuration file containing every parameter that can be modified to suit your needs
 - [index.php](web/index.php) ⇒ the main page that provides users with the option to create, access, revert, or destroy their instance as well as change their password or sign out of their account
   - redirects to login.php if user is not logged in or if session expired
