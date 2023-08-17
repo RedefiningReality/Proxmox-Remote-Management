@@ -1,6 +1,6 @@
 # Proxmox and pfSense Remote Management Website
 
-A basic web interface that allows users to manage their access to Proxmox and create/revert/destroy one instance of an environment, within parameters that you define. These paramateres are defined in the [config.ini](web/config.ini) file, which has detailed comments explaining each option. This uses the Python remote management scripts for its backend. More information about the scripts may be found [here](Scripts.md).
+A basic web interface that allows users to manage their access to Proxmox and create/revert/destroy one instance of an environment, within parameters that you define. These parameters are defined in the [config.ini](web/config.ini) file, which has detailed comments explaining each option. This uses the Python remote management scripts for its backend. More information about the scripts may be found [here](Scripts.md).
 
 ### Setup
 **Note:** Requires Python 3.9. These instructions are for installing the Python scripts AND the web interface. To install only the Python scripts, consult the setup instructions [here](Scripts.md).
