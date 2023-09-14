@@ -1,7 +1,7 @@
 <?php
 
 function make_blank_file() {
-    $ids = [];
+    $ids = [-1];
     $serialized = serialize($ids);
     file_put_contents('sessions', $serialized);
 }
