@@ -75,10 +75,14 @@ function build_command($command, $user, $id, $bool_options, $str_options, $loggi
 
     if (isset($logging['info_log'])) {
         $command .= ' >>' . $logging['info_log'];
+    } else {
+        $command .= ' >/dev/null';
     }
 
     if (isset($logging['error_log'])) {
         $command .= ' 2>>' . $logging['error_log'];
+    } else {
+        $command .= ' 2>&1';
     }
 
     return $command;
